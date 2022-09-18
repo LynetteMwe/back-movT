@@ -5,7 +5,33 @@ const saltRounds = 10
 
 const router = express.Router()
 
-///////////////////register  working without hashing
+
+router.get('/', (req, res, next)=>{
+  query = "SELECT * FROM clients"
+  connection.query(query, (err, results)=>{
+   if(!err){
+    console.log(results)
+    return res.status(200).json(results)
+   }else{ 
+    return res.status(500).json(err)
+   }
+  })
+ })
+
+router.get('/:client_id', (req, res, next)=>{
+  const id = req.params.client_id;
+  let clients = req.body
+  query = "SELECT * FROM clients where client_id=?"
+  connection.query(query, id,(err, results)=>{
+    if(!err){
+    console.log(results)
+    return res.status(200).json(results)
+    }else{ 
+    return res.status(500).json(err)
+    }
+})
+})
+///////////////////register working without hashing
 router.post('/register', (req, res)=>{
  let clients = req.body
 
@@ -94,8 +120,8 @@ router.post("/login",(req, res)=>{
 // })
 
 //update
-router.patch('/update/:id', (req, res, next)=>{
- const id = req.params.id;
+router.patch('/update/:client_id', (req, res, next)=>{
+ const id = req.params.client_id
  let clients = req.body
  query = "UPDATE clients set contact=?, username=?, email=?, password=? where id=?"
  connection.query(query, [clients.contact, clients.username,  clients.email, clients.password, id], (err,results)=>{
@@ -113,7 +139,7 @@ router.patch('/update/:id', (req, res, next)=>{
 
 //Delete user
 router.delete('/delete/:client_id', (req, res, next)=>{
- const id = req.params.id;
+ const id = req.params.client_id;
  let clients = req.body
  query = "delete FROM clients where client_id=?"
  connection.query(query, [id],(err, results)=>{
@@ -129,35 +155,6 @@ router.delete('/delete/:client_id', (req, res, next)=>{
  })
 })
 
-
-//Get all users
-// router.get('/read', (req,res)=> res.json(users))
-router.get('/read', (req, res, next)=>{
- query = "SELECT * FROM clients"
- connection.query(query, (err, results)=>{
-  if(!err){
-   console.log(results)
-   return res.status(200).json(results)
-  }else{ 
-   return res.status(500).json(err)
-  }
- })
-})
-
-//Get one user
-router.get('/read/:client_id', (req, res, next)=>{
- const id = req.params.id;
- let clients = req.body
- query = "SELECT * FROM clients where client_id=?"
- connection.query(query, id,(err, results)=>{
-  if(!err){
-   console.log(results)
-   return res.status(200).json(results)
-  }else{ 
-   return res.status(500).json(err)
-  }
- })
-})
 
 
 
