@@ -30,13 +30,13 @@ router.get('/:truck_id', (req, res, next)=>{
 router.post('/add', (req, res)=>{
  let trucks = req.body
 
- const plateNum = req.params.truck_plate_no
+ const truck_plate_no = req.params.truck_plate_no
  const driver_id = req.params.driver_id
- const serviceType = req.params.service_type
+ const service_type = req.params.service_type
 
  query = 
  "insert into trucks (truck_plate_no, driver_id, service_type) values(?, ?, ?)"
- connection.query(query, [trucks.plateNum, trucks.driver_id,  trucks.serviceType], (err,results)=>{
+ connection.query(query, [trucks.truck_plate_no, trucks.driver_id,  trucks.service_type], (err,results)=>{
   if(!err){
    return res.status(200).json({message:"Truck Added Successfully"})
   }else{
