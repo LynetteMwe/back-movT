@@ -11,14 +11,16 @@ server.listen(port, () => {
 });
 
 app.get("/", (req, res) => {
-    res.json({ 
+    res.json({
         message: "ok",
         routes: [
+            "/user",
+            "/user/:id",
             "/drivers",
             "/clients",
             "/notifications",
             "/trucks",
-            "/orders"
-        ] 
+            "/orders",
+        ],
     });
 });
