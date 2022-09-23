@@ -11,5 +11,14 @@ server.listen(port, () => {
 });
 
 app.get("/", (req, res) => {
-    res.json({ message: "ok", port: process.env.PORT });
+    res.json({ 
+        message: "ok",
+        routes: [
+            "/drivers",
+            "/clients",
+            "/notifications",
+            "/trucks",
+            "/orders"
+        ] 
+    });
 });
