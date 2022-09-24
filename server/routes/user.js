@@ -1,19 +1,19 @@
 const express = require("express");
 const User = require("../models/User");
-const { serverError, getUser } = require("../utils/utils");
+const { serverError, getUser, generateToken } = require("../utils/utils");
 
 const router = express.Router();
 
 // Get single user by id
-router.get("/user/:pk", (req, res, next) => {
+router.get("/:pk", (req, res, next) => {
     User.findByPk(req.params.pk)
         .then(user => {
             if (!user)
-                return res.json({
-                    status: 404, // Not Found
+                return res.status(404).json({
+                    status: res.statusCode, // Not Found
                     error: "User not found!",
                 });
-            return res.json(getUser(user));
+            res.json(getUser(user));
         })
         .catch(error => serverError(res, error));
 });
@@ -22,21 +22,22 @@ router.get("/user/:pk", (req, res, next) => {
 // ...
 
 // Create a new user
-router.post("/user", (req, res, next) => {
+router.post("/", (req, res, next) => {
     const { f_name, l_name, email, password } = req.body;
     User.create({
         f_name,
         l_name,
         email,
         password,
+        token: generateToken(email),
     })
         .then(user => {
             if (!user)
-                return res.json({
-                    status: 400, // Bad Request
+                return res.status(400).json({
+                    status: res.statusCode, // Bad Request
                     error: "Provide f_name, l_name, email, password",
                 });
-            return res.json(getUser(user));
+            res.json(getUser(user, true));
         })
         .catch(error => serverError(res, error));
 });

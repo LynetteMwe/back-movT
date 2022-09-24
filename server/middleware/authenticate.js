@@ -1,30 +1,40 @@
+const passport = require("passport");
+const BearerStrategy = require("passport-http-bearer").Strategy;
 const User = require("../models/User");
-const Session = require("../models/Session");
 
-const authenticate = async (req, res, next) => {
-    try {
-        const { token } = req.cookies;
-        if (typeof token !== "string") {
-            throw new Error("Request cookie is invalid.");
-        }
-        const session = await Session.findOne({ token, status: "valid" });
-        if (!session) {
-            res.clearCookie("token");
-            throw new Error("Your session has expired. You need to log in.");
-        }
-        req.session = session;
-        next();
-    } catch (err) {
-        res.status(401).json({
-            errors: [
-                {
-                    title: "Unauthorized",
-                    detail: "Authentication credentials invalid",
-                    errorMessage: err.message,
-                },
-            ],
-        });
-    }
-};
+passport.use(
+    new BearerStrategy(function (token, done) {
+        User.findOne({ where: { token: token } })
+            .then(user => {
+                if (!user) return done(null, false);
+                return done(null, user, { scope: "all" });
+            })
+            .catch(err => {
+                if (err) return done(err);
+            });
+    })
+);
 
-module.exports = { authenticate };
+function authenticate(req, res, next) {
+    passport.authenticate(
+        "bearer",
+        { session: false },
+        function (err, user, info) {
+            if (err) {
+                return next(err);
+            }
+
+            if (!user) {
+                return res.status(401).json({
+                    status: res.statusCode,
+                    message: "Incorrect token credentials",
+                });
+            }
+
+            req.user = user;
+            next();
+        }
+    )(req, res, next);
+}
+
+module.exports = { authenticate, passport };

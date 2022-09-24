@@ -28,14 +28,21 @@ function encryptPassword(plainText) {
 function comparePassword(plainText, hash) {
     return bcrypt.compareSync(plainText, hash);
 }
-function getUser(user) {
-    return {
-        id: user.id,
-        f_name: user.f_name,
-        l_name: user.l_name,
-        name: user.fullName,
-        email: user.email,
+function getUser(user, showToken = false) {
+    const obj = {
+        id: user?.id,
+        f_name: user?.f_name,
+        l_name: user?.l_name,
+        name: user?.fullName,
+        email: user?.email,
     };
+    if (showToken) obj.token = user?.token;
+    return obj;
+}
+
+function generateToken(email) {
+    const str = new Date().toUTCString() + email;
+    return bcrypt.hashSync(str, 10);
 }
 
 module.exports = {
@@ -44,4 +51,5 @@ module.exports = {
     encryptPassword,
     comparePassword,
     getUser,
+    generateToken,
 };

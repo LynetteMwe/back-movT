@@ -36,6 +36,11 @@ const User = sequelize.define("User", {
             this.setDataValue("password", encryptPassword(value));
         },
     },
+    token: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        // create token as defaultValue
+    },
     resetToken: {
         type: DataTypes.STRING,
         allowNull: true,
