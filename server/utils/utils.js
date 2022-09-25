@@ -41,7 +41,7 @@ function getUser(user, showToken = false) {
 }
 
 function generateToken(email) {
-    const str = new Date().toUTCString() + email;
+    const str = email + new Date().toUTCString();
     return bcrypt.hashSync(str, 10);
 }
 

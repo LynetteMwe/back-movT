@@ -19,7 +19,11 @@ router.get("/:pk", (req, res, next) => {
 });
 
 // Get all users
-// ...
+router.get("/", async (req, res) => {
+    const _ = await User.findAll();
+    users = _.map(user => getUser(user));
+    res.status(200).json(users);
+});
 
 // Create a new user
 router.post("/", (req, res, next) => {

@@ -15,8 +15,11 @@ app.get("/", (req, res) => {
     res.json({
         message: "ok",
         routes: [
-            "/user",
-            "/user/:id",
+            "/auth/login",
+            "/auth/register",
+            "/auth/logout",
+            "/users",
+            "/users/:id",
             "/drivers",
             "/clients",
             "/notifications",

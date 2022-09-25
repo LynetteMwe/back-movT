@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use("/auth", authRoute);
-app.use("/user", authenticate, userRoute);
+app.use("/users", authenticate, userRoute);
 app.use("/drivers", authenticate, driverRoute);
 app.use("/clients", authenticate, clientRoute);
 app.use("/orders", authenticate, ordersRoute);
