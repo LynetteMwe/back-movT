@@ -30,9 +30,14 @@ function comparePassword(plainText, hash) {
 }
 function getUser(user, showToken = false) {
     const obj = {
-        id: user?.id,
-        f_name: user?.f_name,
-        l_name: user?.l_name,
+        // id: user?.id,
+        // f_name: user?.f_name,
+        // l_name: user?.l_name,
+        id: user?.client_id,
+        username: user?.username,
+        contact:user?.contact,
+
+
         name: user?.fullName,
         email: user?.email,
     };
