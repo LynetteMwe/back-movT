@@ -1,12 +1,15 @@
 const passport = require("passport");
 const BearerStrategy = require("passport-http-bearer").Strategy;
-const Client = require("../models/Client");
+const Driver = require("../models/Driver");
 const { getUser } = require("../utils/utils");
-
 
 passport.use(
     new BearerStrategy(function (token, done) {
-        Client.findOne({ where: { token: token } })
+        // Driver.findAll().then(usrs => {
+        //     users = usrs.map(user => getUser(user, true));
+        //     console.log(users);
+        // }).catch(console.log)
+        Driver.findOne({ where: { token: token } })
             .then(user => {
                 if (!user) return done(null, false);
                 return done(null, user, { scope: "all" });
@@ -17,7 +20,7 @@ passport.use(
     })
 );
 
-function authenticate(req, res, next) {
+function authenticateDriver(req, res, next) {
     passport.authenticate(
         "bearer",
         { session: false },
@@ -40,4 +43,4 @@ function authenticate(req, res, next) {
 }
  
 
-module.exports = { authenticate, passport };
+module.exports = { authenticateDriver, passport };
