@@ -1,71 +1,60 @@
-const express = require('express')
-const connection = require('../connection')
-const router = express.Router()
+const express = require("express");
+const ordersRoute = require("./orders");
+const { authenticateDriver } = require("../middleware/authenticateDriver");
+const Driver = require("../models/Driver");
+const { serverError, getUser, generateToken } = require("../utils/utilsDrivers");
 
-router.get('/', (req, res, next)=>{
-  query = "SELECT * FROM drivers"
-  connection.query(query, (err, results)=>{
-   if(!err){
-   //  console.log(results)
-    return res.status(200).json(results)
-   }else{ 
-    return res.status(500).json(err)
-   }
-  })
- })
- 
-router.get('/:driver_id', (req, res, next)=>{
-const id = req.params.driver_id;
-let drivers = req.body
-query = "SELECT * FROM drivers where driver_id=?"
-connection.query(query, id,(err, results)=>{
-  if(!err){
-  console.log(results)
-  return res.status(200).json(results)
-  }else{ 
-  return res.status(500).json(err)
-  }
-})
-})
-
-router.post('/register', (req, res)=>{
- let drivers = req.body
-
- const username = req.params.username
- const password = req.params.password
- const contact = req.params.contact
- const email = req.params.email
-
- query = "insert into drivers (contact, username, email, password) values(?, ?, ?, ?)"
- connection.query(query, [drivers.contact, drivers.username,  drivers.email, drivers.password], (err,results)=>{
-  if(!err){
-   return res.status(200).json({message:"Driver Added Successfully"})
-  }else{
-   return res.status(500).json({message:err})
-  }
- })
-
-})
-
-//Login
-router.post("/login",(req, res)=>{
- let drivers = req.body
-
- query = "SELECT * FROM drivers where username=? AND password=?"
- connection.query(query, [drivers.username, drivers.password],(err, results)=>{
-  if(err){
-   res.send({err : err})
-  }
-  if (results.length > 0){
-    return res.status(200).json({message:"Login Successful"})
-  }
-  else{
-   res.send({message: "Wrong username or password"})
-   }
-   })
-  }
-)
+const router = express.Router();
+// router.use("/orders", authenticateDriver, ordersRoute);
 
 
+// Get single user by id
+router.get("/:pk", (req, res, next) => {
+  Driver.findByPk(req.params.pk)
+        .then(user => {
+            if (!user)
+                return res.status(404).json({
+                    status: res.statusCode, // Not Found
+                    error: "User not found!",
+                });
+            res.json(getUser(user));
+        })
+        .catch(error => serverError(res, error));
+});
 
-module.exports = router
+// Get all users
+router.get("/", async (req, res) => {
+    const _ = await Driver.findAll();
+    users = _.map(user => getUser(user));
+    res.status(200).json(users);
+});
+
+// Create a new user
+router.post("/", (req, res, next) => {
+    const { f_name, l_name, email, password } = req.body;
+    Driver.create({
+        username,
+        contact,
+        email,
+        password,
+        token: generateToken(email),
+    })
+        .then(user => {
+            if (!user)
+                return res.status(400).json({
+                    status: res.statusCode, // Bad Request
+                    error: "Provide f_name, l_name, email, password",
+                });
+            res.json(getUser(user, true));
+        })
+        .catch(error => serverError(res, error));
+});
+
+// Update a user
+// ...
+
+// Delete a user
+// ...
+
+
+module.exports = router;
