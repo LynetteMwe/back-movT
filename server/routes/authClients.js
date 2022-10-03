@@ -1,9 +1,8 @@
 const express = require("express");
 const { authenticate } = require("../middleware/authenticate");
-// const User = require("../models/User");
-const Client = require("../models/Client")
+const Client = require("../models/Client");
 const {
-    generateToken, 
+    generateToken,
     getUser,
     serverError,
     comparePassword,
@@ -20,7 +19,7 @@ router.post("/login", (req, res) => {
                 return res.status(400).json({
                     status: res.statusCode, // Bad Request
                     error: "Invalid credentials!", // invalid email
-                }); 
+                });
             } else {
                 const validPassword = comparePassword(
                     req.body?.password,
@@ -50,7 +49,7 @@ router.post("/register", (req, res) => {
     const { username, contact, email, password } = req.body;
     Client.create({
         username,
-        contact, 
+        contact,
         email,
         password,
         token: generateToken(email),

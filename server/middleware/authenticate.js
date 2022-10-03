@@ -1,22 +1,68 @@
 const passport = require("passport");
-const BearerStrategy = require("passport-http-bearer").Strategy;
-const Client = require("../models/Client");
-const { getUser } = require("../utils/utils");
 
+// Middleware to only allow authenticated clients to access the route
+function authenticateClient(req, res, next) {
+    passport.authenticate(
+        "bearer",
+        { session: false },
+        function (err, user, info) {
+            if (err) {
+                return next(err);
+            }
 
-passport.use(
-    new BearerStrategy(function (token, done) {
-        Client.findOne({ where: { token: token } })
-            .then(user => {
-                if (!user) return done(null, false);
-                return done(null, user, { scope: "all" });
-            })
-            .catch(err => {
-                if (err) return done(err);
-            });
-    })
-);
+            if (!user) {
+                return res.status(401).json({
+                    status: res.statusCode,
+                    message: "Incorrect token credentials",
+                });
+            }
 
+            // if the user is not a client, return error response
+            if (info?.driver) {
+                return res.status(401).json({
+                    status: res.statusCode,
+                    message: "Only clients are allowed to access this route!",
+                });
+            }
+
+            req.user = user;
+            next();
+        }
+    )(req, res, next);
+}
+
+// Middleware to only allow authenticated drivers to access the route
+function authenticateDriver(req, res, next) {
+    passport.authenticate(
+        "bearer",
+        { session: false },
+        function (err, user, info) {
+            if (err) {
+                return next(err);
+            }
+
+            if (!user) {
+                return res.status(401).json({
+                    status: res.statusCode,
+                    message: "Incorrect token credentials",
+                });
+            }
+
+            // if the user is not a driver, return error response
+            if (info?.client) {
+                return res.status(401).json({
+                    status: res.statusCode,
+                    message: "Only drivers are allowed to access this route!",
+                });
+            }
+
+            req.user = user;
+            next();
+        }
+    )(req, res, next);
+}
+
+// Middleware to only allow anyone authenticated to access the route
 function authenticate(req, res, next) {
     passport.authenticate(
         "bearer",
@@ -38,6 +84,5 @@ function authenticate(req, res, next) {
         }
     )(req, res, next);
 }
- 
 
-module.exports = { authenticate, passport };
+module.exports = { authenticateClient, authenticateDriver, authenticate };

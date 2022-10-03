@@ -1,16 +1,16 @@
 const express = require("express");
-const ordersRoute = require("./orders");
-const { authenticateDriver } = require("../middleware/authenticateDriver");
 const Driver = require("../models/Driver");
-const { serverError, getUser, generateToken } = require("../utils/utilsDrivers");
+const {
+    serverError,
+    getUser,
+    generateToken,
+} = require("../utils/utilsDrivers");
 
 const router = express.Router();
-// router.use("/orders", authenticateDriver, ordersRoute);
-
 
 // Get single user by id
 router.get("/:pk", (req, res, next) => {
-  Driver.findByPk(req.params.pk)
+    Driver.findByPk(req.params.pk)
         .then(user => {
             if (!user)
                 return res.status(404).json({
@@ -55,6 +55,5 @@ router.post("/", (req, res, next) => {
 
 // Delete a user
 // ...
-
 
 module.exports = router;
