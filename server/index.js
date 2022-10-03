@@ -8,7 +8,8 @@ const {
     ordersRoute,
     notificationsRoute,
     truckRoute,
-    userRoute
+    userRoute,
+    ordersPlacedRoute
 } = require("./routes");
 const { authenticate } = require("./middleware/authenticate");
 const { authenticateDriver } = require("./middleware/authenticateDriver");
@@ -22,12 +23,15 @@ app.use("/authClients", authClientRoute);
 app.use("/authDrivers", authDriverRoute)
 
 // app.use("/drivers/orders", authenticateDriver, ordersRoute);
-app.use("/drivers", authenticateDriver, driverRoute);
+app.use("/drivers", driverRoute);
 
 // app.use("/clients/orders", authenticate, ordersRoute);
-app.use("/clients", authenticate, clientRoute);
+app.use("/clients", clientRoute);
+app.use("/orders", ordersRoute);
+app.use("/ordersPlaced", ordersPlacedRoute);
 
-app.use("/notifications", authenticate, notificationsRoute);
-app.use("/trucks", authenticate, truckRoute);
+
+app.use("/notifications", notificationsRoute);
+app.use("/trucks", truckRoute);
 
 module.exports = { app };

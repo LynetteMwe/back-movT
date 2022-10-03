@@ -7,6 +7,7 @@ const ordersRoute = require("./orders");
 const notificationsRoute = require("./notifications");
 const truckRoute = require("./trucks");
 const userRoute = require("./user");
+const ordersPlacedRoute = require("./ordersPlaced")
 
 module.exports = {
     authRoute,
@@ -18,4 +19,5 @@ module.exports = {
     notificationsRoute,
     truckRoute,
     userRoute,
+    ordersPlacedRoute
 };

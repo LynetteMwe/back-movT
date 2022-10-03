@@ -1,49 +1,52 @@
-const express = require('express')
-const connection = require('../connection')
-const router = express.Router()
+const express = require("express");
+const Truck = require("../models/Truck");
 
-router.get('/', (req, res, next)=>{
- query = "SELECT * FROM trucks"
- connection.query(query, (err, results)=>{
-  if(!err){
-   return res.status(200).json(results)
-  }else{ 
-   return res.status(500).json(err)
-  }
- })
-})
+const router = express.Router();
 
-router.get('/:truck_id', (req, res, next)=>{
- const id = req.params.truck_id;
- let trucks = req.body
- query = "SELECT * FROM trucks where truck_id=?"
- connection.query(query, id,(err, results)=>{
-   if(!err){
-   console.log(results)
-   return res.status(200).json(results)
-   }else{ 
-   return res.status(500).json(err)
-   }
- })
- })
+router.get("/:pk", (req, res, next) => {
+  Truck.findByPk(req.params.pk)
+        .then(user => {
+            if (!user)
+                return res.status(404).json({
+                    status: res.statusCode, // Not Found
+                    error: "Truck not found!",
+                });
+            res.json((user));
+        })
+        .catch(error => (res, error));
+});
 
-router.post('/add', (req, res)=>{
- let trucks = req.body
+// Get all users
+router.get("/", async (req, res) => {
+    const _ = await Order.findAll();
+    users = _.map(user => (user));
+    res.status(200).json(users);
+});
 
- const truck_plate_no = req.params.truck_plate_no
- const driver_id = req.params.driver_id
- const service_type = req.params.service_type
+// Create a new user
+router.post("/", (req, res, next) => {
+    const { truck_plate_no, service_type, driver_id } = req.body;
+    Truck.create({
+      truck_plate_no,
+      service_type,
+      driver_id
+    })
+        .then(user => {
+            if (!user)
+                return res.status(400).json({
+                    status: res.statusCode, // Bad Request
+                    error: "Provide truck_plate_no, service_type, driver_id",
+                });
+            res.json((user));
+        })
+        // .catch(error => serverError(res, error));
+});
 
- query = 
- "insert into trucks (truck_plate_no, driver_id, service_type) values(?, ?, ?)"
- connection.query(query, [trucks.truck_plate_no, trucks.driver_id,  trucks.service_type], (err,results)=>{
-  if(!err){
-   return res.status(200).json({message:"Truck Added Successfully"})
-  }else{
-   return res.status(500).json({message:err})
-  }
- })
+// Update a user
+// ...
 
-})
+// Delete a user
+// ...
 
-module.exports = router
+
+module.exports = router;
