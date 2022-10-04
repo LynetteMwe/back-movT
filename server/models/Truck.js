@@ -20,13 +20,13 @@ const Truck = sequelize.define(
             type: DataTypes.STRING,
             allowNull: false,
         },
-        DriverDriverId: {
+        DriverId: {
             type: DataTypes.INTEGER,
             required: true,
             allowNull: true,
             references: {
                 model: "Driver",
-                key: "driver_id",
+                key: "id",
             },
         },
     },
@@ -39,11 +39,11 @@ const Truck = sequelize.define(
 
 // Truck.belongsTo(Driver,{ foreignKey: { allowNull: false }, onDelete: 'CASCADE' } )
 
-// // Create Truck table if it does not exist
-// Truck.sync()
-//     .then(() => {
-//         console.log("Truck table connected successfully!");
-//     })
-//     .catch(err => console.log("Failed to create Trucks table:", err));
+// Create Truck table if it does not exist
+Truck.sync()
+    .then(() => {
+        console.log("Truck table connected successfully!");
+    })
+    .catch(err => console.log("Failed to create Trucks table:", err));
 
 module.exports = Truck;

@@ -27,18 +27,21 @@ router.get("/", async (req, res) => {
 
 // Create a new user
 router.post("/", (req, res, next) => {
-    const { description, origin, destination, amount } = req.body;
+    const {  DriverId, description, origin, destination, amount, status } = req.body;
     Order.create({
+        
+        DriverId,
         description,
         origin,
         destination,
-        amount
+        amount, 
+        status
     })
         .then(user => {
             if (!user)
                 return res.status(400).json({
                     status: res.statusCode, // Bad Request
-                    error: "Provide description, origin, destination, amount",
+                    error: "Provide ClientId, DriverId, description, origin, destination, amount, status",
                 });
             res.json((user));
         })

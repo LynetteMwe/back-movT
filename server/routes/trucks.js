@@ -25,11 +25,12 @@ router.get("/", async (req, res) => {
 
 // Create a new user
 router.post("/", (req, res, next) => {
-    const { truck_plate_no, service_type, driver_id } = req.body;
+    const { truck_plate_no, service_type, DriverId } = req.body;
     Truck.create({
       truck_plate_no,
       service_type,
-      driver_id
+      DriverId
+    //   driver_id
     })
         .then(user => {
             if (!user)
