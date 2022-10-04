@@ -30,7 +30,7 @@ router.get("/", async (req, res) => {
 
 // Create a new user
 router.post("/", (req, res, next) => {
-    const { f_name, l_name, email, password } = req.body;
+    const { username, contact, email, password } = req.body;
     Client.create({
         username,
         contact,
@@ -42,7 +42,7 @@ router.post("/", (req, res, next) => {
             if (!user)
                 return res.status(400).json({
                     status: res.statusCode, // Bad Request
-                    error: "Provide f_name, l_name, email, password",
+                    error: "Provide username, contact, email, password",
                 });
             res.json(getUser(user, true));
         })

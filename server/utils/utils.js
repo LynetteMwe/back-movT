@@ -33,12 +33,11 @@ function getUser(user, showToken = false) {
         // id: user?.id,
         // f_name: user?.f_name,
         // l_name: user?.l_name,
-        id: user?.client_id,
+        id: user?.id,
         username: user?.username,
         contact:user?.contact,
 
 
-        name: user?.fullName,
         email: user?.email,
     };
     if (showToken) obj.token = user?.token;
