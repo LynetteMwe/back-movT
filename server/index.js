@@ -11,8 +11,7 @@ const {
     ordersRoute,
     notificationsRoute,
     truckRoute,
-    userRoute,
-    ordersPlacedRoute,
+    userRoute
 } = require("./routes");
 const Client = require("./models/Client");
 const Driver = require("./models/Driver");
@@ -64,8 +63,8 @@ app.use("/drivers", authenticateDriver, driverRoute);
 app.use("/clients/orders", authenticateClient, ordersRoute);
 app.use("/clients", authenticateClient, clientRoute);
 
-// app.use("/orders", ordersRoute);
-// app.use("/ordersPlaced", ordersPlacedRoute);
+app.use("/orders", ordersRoute)
+
 
 app.use("/notifications", notificationsRoute);
 app.use("/trucks", truckRoute);
