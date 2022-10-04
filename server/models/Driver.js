@@ -2,8 +2,8 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../connection");
 const { encryptPassword } = require("../utils/utils");
 
-const Driver = sequelize.define("Driver_B", {
-    driver_id: {
+const Driver = sequelize.define("Driver", {
+    id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         allowNull: false,

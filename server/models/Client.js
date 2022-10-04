@@ -2,8 +2,8 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../connection");
 const { encryptPassword } = require("../utils/utils");
 
-const Client = sequelize.define("Client_B", {
-    client_id: {
+const Client = sequelize.define("Client", {
+    id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         allowNull: false,
