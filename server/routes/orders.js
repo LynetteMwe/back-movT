@@ -27,9 +27,9 @@ router.get("/", async (req, res) => {
 
 // Create a new user
 router.post("/", (req, res, next) => {
-    const {  DriverId, description, origin, destination, amount, status } = req.body;
+    const {  ClientId, DriverId, description, origin, destination, amount, status } = req.body;
     Order.create({
-        
+        ClientId,        
         DriverId,
         description,
         origin,

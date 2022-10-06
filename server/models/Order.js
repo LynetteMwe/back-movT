@@ -9,8 +9,8 @@ const Order = sequelize.define("Order", {
         autoIncrement: true,
         allowNull: false,
         primaryKey: true,
-    },
-    ClientId: {
+    }, 
+    ClientId: {    
         type: DataTypes.INTEGER,
         required: true,
         allowNull: true,
