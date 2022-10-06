@@ -25,8 +25,8 @@ const Truck = sequelize.define(
             required: true,
             allowNull: true,
             references: {
-                model: "Driver",
-                key: "id",
+                model: Driver,
+                key: "id"
             },
         },
     },
@@ -35,9 +35,9 @@ const Truck = sequelize.define(
     }
 );
 
-// Driver.hasOne(Truck, { foreignKey: { allowNull: false }, onDelete: 'CASCADE' })
+Driver.hasOne(Truck, { foreignKey: { allowNull: false }, onDelete: 'CASCADE' })
 
-// Truck.belongsTo(Driver,{ foreignKey: { allowNull: false }, onDelete: 'CASCADE' } )
+Truck.belongsTo(Driver,{ foreignKey: { allowNull: false }, onDelete: 'CASCADE' } )
 
 // Create Truck table if it does not exist
 Truck.sync()

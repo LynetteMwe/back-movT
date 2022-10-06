@@ -15,7 +15,7 @@ router.get("/:pk", (req, res, next) => {
         })
         .catch(error => (res, error));
 });
-
+ 
 // Get all users
 router.get("/", async (req, res) => {
     const _ = await Order.findAll();
@@ -30,7 +30,6 @@ router.post("/", (req, res, next) => {
       truck_plate_no,
       service_type,
       DriverId
-    //   driver_id
     })
         .then(user => {
             if (!user)
