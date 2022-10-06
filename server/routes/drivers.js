@@ -1,4 +1,5 @@
 const express = require("express");
+const { authenticateDriver } = require("../middleware/authenticate");
 const Driver = require("../models/Driver");
 const {
     serverError,
@@ -9,17 +10,25 @@ const {
 const router = express.Router();
 
 // Get single user by id
-router.get("/:pk", (req, res, next) => {
+router.get("/int:pk", (req, res, next) => {
     Driver.findByPk(req.params.pk)
         .then(user => {
             if (!user)
                 return res.status(404).json({
                     status: res.statusCode, // Not Found
-                    error: "User not found!",
+                    error: "User not found!", 
                 });
             res.json(getUser(user));
         })
         .catch(error => serverError(res, error));
+});
+
+// Get single user by id
+router.get("/profile", (req, res, next) => {
+    return res.status(200).json({
+        status: res.statusCode, // Ok
+        data: getUser(req.user)
+    });
 });
 
 // Get all users
