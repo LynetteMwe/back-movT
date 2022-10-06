@@ -58,13 +58,15 @@ router.post("/register", (req, res) => {
             if (!user)
                 return res.status(400).json({
                     status: res.statusCode, // Bad Request
-                    error: "Provide f_name, l_name, email, password",
+                    error: "Provide username, contact, email, password",
                 });
             res.json(getUser(user, true));
         })
         .catch(error => serverError(res, error));
 });
 router.all("/register", methodNotAllowed);
+
+
 
 // Logout by deleting token
 router.post("/logout", authenticate, (req, res) => {

@@ -7,7 +7,7 @@ const {
     getUser,
     serverError,
     comparePassword,
-} = require("../utils/utilsDrivers");
+} = require("../utils/utils");
 const methodNotAllowed = require("../middleware/methodNotAllowed");
 
 const router = express.Router();
@@ -59,7 +59,7 @@ router.post("/register", (req, res) => {
             if (!user)
                 return res.status(400).json({
                     status: res.statusCode, // Bad Request
-                    error: "Provide f_name, l_name, email, password",
+                    error: "Provide username, contact, email, password",
                 });
             res.json(getUser(user, true));
         })

@@ -57,6 +57,7 @@ function authenticateDriver(req, res, next) {
             }
 
             req.user = user;
+            console.log("middleware: ", req.user.username)
             next();
         }
     )(req, res, next);
