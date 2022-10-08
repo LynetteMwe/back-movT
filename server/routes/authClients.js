@@ -67,6 +67,30 @@ router.post("/register", (req, res) => {
 router.all("/register", methodNotAllowed);
 
 
+router.post("/changepassword"),(req, res)=>{
+    Client.findOne({ where: { email: req.body?.email } })
+        .then(async user => {
+            if (!user) {
+                // No such user/email
+                return res.status(400).json({
+                    status: res.statusCode, // Bad Request
+                    error: "Invalid email!",
+                });
+            } else {
+                req.user
+                    .update({password : req.body?.password})
+                    .then(()=>{
+                        res.status(200).json({
+                            status: res.statusCode,
+                            message:"Password changed"
+                        })
+                    })
+                    .catch(err => serverError(err))
+                }}
+
+)}
+router.all("/changepassword", methodNotAllowed);
+
 
 // Logout by deleting token
 router.post("/logout", authenticate, (req, res) => {
