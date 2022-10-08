@@ -89,7 +89,7 @@ router.post("/changepassword"),(req, res)=>{
                 }}
 
 )}
-router.all("/changepassword", methodNotAllowed);
+router.all("/changepassword", methodNotAllowed); 
 
 
 // Logout by deleting token
