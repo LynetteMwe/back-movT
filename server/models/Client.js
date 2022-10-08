@@ -1,6 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../connection");
-const { encryptPassword } = require("../utils/utils");
+const { encryptPassword, isEmail, isPassword } = require("../utils/utils");
 
 const Client = sequelize.define("Client", {
     id: {
@@ -30,8 +30,11 @@ const Client = sequelize.define("Client", {
     },
     // type: {},
     password: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING, 
         allowNull: false,
+        validate: {
+            isPassword: true,            
+        },
         set(value) {
             this.setDataValue("password", encryptPassword(value));
         },
