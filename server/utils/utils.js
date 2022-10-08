@@ -9,6 +9,17 @@ const isEmail = email => {
     return emailRegex.test(email);
 };
 
+const isPassword = password => {
+    if (typeof password !== "string") {
+        return false;
+    }
+    const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
+
+    // "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+    
+    return pwRegex.test(password);
+};
+
 const serverError = (res, error) => {
     console.log(error);
     res.statusCode = error?.original?.code === "ER_DUP_ENTRY" ? 400 : 500;
@@ -51,6 +62,7 @@ function generateToken(email) {
 
 module.exports = {
     isEmail,
+    isPassword,
     serverError,
     encryptPassword,
     comparePassword,
