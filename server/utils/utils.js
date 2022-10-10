@@ -13,10 +13,10 @@ const isPassword = password => {
     if (typeof password !== "string") {
         return false;
     }
-    const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
+    const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
 
     // "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
-    
+
     return pwRegex.test(password);
 };
 
@@ -36,19 +36,16 @@ const serverError = (res, error) => {
 function encryptPassword(plainText) {
     return bcrypt.hashSync(plainText, 10);
 }
+
 function comparePassword(plainText, hash) {
     return bcrypt.compareSync(plainText, hash);
 }
+
 function getUser(user, showToken = false) {
     const obj = {
-        // id: user?.id,
-        // f_name: user?.f_name,
-        // l_name: user?.l_name,
         id: user?.id,
         username: user?.username,
-        contact:user?.contact,
-
-
+        contact: user?.contact,
         email: user?.email,
     };
     if (showToken) obj.token = user?.token;

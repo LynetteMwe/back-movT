@@ -1,22 +1,18 @@
 const express = require("express");
 const { authenticateDriver } = require("../middleware/authenticate");
 const Driver = require("../models/Driver");
-const {
-    serverError,
-    getUser,
-    generateToken,
-} = require("../utils/utils");
+const { serverError, getUser, generateToken } = require("../utils/utils");
 
 const router = express.Router();
 
 // Get single user by id
-router.get("/int:pk", (req, res, next) => {
-    Driver.findByPk(req.params.pk)
+router.get("/:id(\\d+)", (req, res, next) => {
+    Driver.findByPk(req.params.id)
         .then(user => {
             if (!user)
                 return res.status(404).json({
                     status: res.statusCode, // Not Found
-                    error: "User not found!", 
+                    error: "User not found!",
                 });
             res.json(getUser(user));
         })
@@ -25,10 +21,7 @@ router.get("/int:pk", (req, res, next) => {
 
 // Get single user by id
 router.get("/profile", (req, res, next) => {
-    return res.status(200).json({
-        status: res.statusCode, // Ok
-        data: getUser(req.user)
-    });
+    return res.status(200).json(getUser(req.user));
 });
 
 // Get all users

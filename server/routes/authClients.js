@@ -12,6 +12,11 @@ const methodNotAllowed = require("../middleware/methodNotAllowed");
 const router = express.Router();
 
 router.post("/login", (req, res) => {
+    let errors = [];
+    if (!req.body?.email) errors.push("Field 'email' is required!");
+    if (!req.body?.password) errors.push("Field 'password' is required!");
+    if (errors.length > 0) return res.status(400).json({ errors });
+
     Client.findOne({ where: { email: req.body?.email } })
         .then(async user => {
             if (!user) {
@@ -66,31 +71,31 @@ router.post("/register", (req, res) => {
 });
 router.all("/register", methodNotAllowed);
 
-
-router.post("/changepassword"),(req, res)=>{
-    Client.findOne({ where: { email: req.body?.email } })
-        .then(async user => {
-            if (!user) {
-                // No such user/email
-                return res.status(400).json({
-                    status: res.statusCode, // Bad Request
-                    error: "Invalid email!",
-                });
-            } else {
-                req.user
-                    .update({password : req.body?.password})
-                    .then(()=>{
-                        res.status(200).json({
-                            status: res.statusCode,
-                            message:"Password changed"
+router.post("/changepassword"),
+    (req, res) => {
+        Client.findOne({ where: { email: req.body?.email } }).then(
+            async user => {
+                if (!user) {
+                    // No such user/email
+                    return res.status(400).json({
+                        status: res.statusCode, // Bad Request
+                        error: "Invalid email!",
+                    });
+                } else {
+                    req.user
+                        .update({ password: req.body?.password })
+                        .then(() => {
+                            res.status(200).json({
+                                status: res.statusCode,
+                                message: "Password changed",
+                            });
                         })
-                    })
-                    .catch(err => serverError(err))
-                }}
-
-)}
-router.all("/changepassword", methodNotAllowed); 
-
+                        .catch(err => serverError(err));
+                }
+            }
+        );
+    };
+router.all("/changepassword", methodNotAllowed);
 
 // Logout by deleting token
 router.post("/logout", authenticate, (req, res) => {

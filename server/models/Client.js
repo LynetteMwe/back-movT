@@ -9,16 +9,15 @@ const Client = sequelize.define("Client", {
         allowNull: false,
         primaryKey: true,
     },
-    username:{
-     type:DataTypes.STRING,
-     unique: true, 
-     allowNull: false,
-     
-    }, 
-    contact:{
-     type:DataTypes.STRING,
-     unique: true,
-     allowNull: false,
+    username: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false,
+    },
+    contact: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false,
     },
     email: {
         type: DataTypes.STRING,
@@ -30,11 +29,11 @@ const Client = sequelize.define("Client", {
     },
     // type: {},
     password: {
-        type: DataTypes.STRING, 
+        type: DataTypes.STRING,
         allowNull: false,
-        validate: {
-            isPassword: true,            
-        },
+        // validate: {
+        //     isPassword: true,
+        // },
         set(value) {
             this.setDataValue("password", encryptPassword(value));
         },

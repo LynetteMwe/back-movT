@@ -1,9 +1,9 @@
 const express = require("express");
 const { authenticate } = require("../middleware/authenticate");
 // const User = require("../models/User");
-const Driver = require("../models/Driver")
+const Driver = require("../models/Driver");
 const {
-    generateToken, 
+    generateToken,
     getUser,
     serverError,
     comparePassword,
@@ -13,35 +13,40 @@ const methodNotAllowed = require("../middleware/methodNotAllowed");
 const router = express.Router();
 
 router.post("/login", (req, res) => {
+    let errors = [];
+    if (!req.body?.email) errors.push("Field 'email' is required!");
+    if (!req.body?.password) errors.push("Field 'password' is required!");
+    if (errors.length > 0) return res.status(400).json({ errors });
+
     Driver.findOne({ where: { email: req.body?.email } })
-    .then(async user => {
-     if (!user) {
-      // No such user/email
-      return res.status(400).json({
-       status: res.statusCode, // Bad Request
-       error: "Invalid credentials!", // invalid email
-       }); 
-        } else {
-         const validPassword = comparePassword(
-          req.body?.password,
-          user.password
-            );
-            if (validPassword) {
-             // Create token if there is no token for the user
-             if (!user.token) {
-                    user.token = generateToken(user.email);
-                    await user.save();
-                }
-                return res.json(getUser(user, true));
-            } else {
+        .then(async user => {
+            if (!user) {
+                // No such user/email
                 return res.status(400).json({
                     status: res.statusCode, // Bad Request
-                    error: "Invalid credentials!", // invalid password
+                    error: "Invalid credentials!", // invalid email
                 });
+            } else {
+                const validPassword = comparePassword(
+                    req.body?.password,
+                    user.password
+                );
+                if (validPassword) {
+                    // Create token if there is no token for the user
+                    if (!user.token) {
+                        user.token = generateToken(user.email);
+                        await user.save();
+                    }
+                    return res.json(getUser(user, true));
+                } else {
+                    return res.status(400).json({
+                        status: res.statusCode, // Bad Request
+                        error: "Invalid credentials!", // invalid password
+                    });
+                }
             }
-        }
-    })
-    .catch(error => serverError(res, error));
+        })
+        .catch(error => serverError(res, error));
 });
 router.all("/login", methodNotAllowed);
 
@@ -50,7 +55,7 @@ router.post("/register", (req, res) => {
     const { username, contact, email, password } = req.body;
     Driver.create({
         username,
-        contact, 
+        contact,
         email,
         password,
         token: generateToken(email),

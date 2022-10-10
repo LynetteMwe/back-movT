@@ -17,6 +17,7 @@
     "express": "^4.18.1",
     "express-mysql-session": "^2.1.8",
     "express-session": "^1.17.3",
+    "morgan": "^1.10.0",
     "mysql2": "^2.3.3",
     "nodemon": "^2.0.19",
     "passport": "^0.6.0",
@@ -24,5 +25,8 @@
     "passport-local": "^1.0.0",
     "sequelize": "^6.23.1",
     "uuidv4": "^6.2.13"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.5.1"
   }
 }

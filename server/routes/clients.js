@@ -1,15 +1,13 @@
 const express = require("express");
 const ordersRoute = require("./orders");
-const { authenticate } = require("../middleware/authenticate");
 const Client = require("../models/Client");
 const { serverError, getUser, generateToken } = require("../utils/utils");
 
 const router = express.Router();
-// router.use("/orders", authenticate, ordersRoute);
 
 // Get single user by id
-router.get("/:pk", (req, res, next) => {
- Client.findByPk(req.params.pk)
+router.get("/:id(\\d+)", (req, res) => {
+    Client.findByPk(req.params.id)
         .then(user => {
             if (!user)
                 return res.status(404).json({
@@ -21,6 +19,10 @@ router.get("/:pk", (req, res, next) => {
         .catch(error => serverError(res, error));
 });
 
+router.get("/profile", (req, res) => {
+    return res.status(200).json(getUser(req.user));
+});
+
 // Get all users
 router.get("/", async (req, res) => {
     const _ = await Client.findAll();
@@ -29,7 +31,7 @@ router.get("/", async (req, res) => {
 });
 
 // Create a new user
-router.post("/", (req, res, next) => {
+router.post("/", (req, res) => {
     const { username, contact, email, password } = req.body;
     Client.create({
         username,
@@ -54,6 +56,5 @@ router.post("/", (req, res, next) => {
 
 // Delete a user
 // ...
-
 
 module.exports = router;

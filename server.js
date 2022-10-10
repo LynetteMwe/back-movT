@@ -15,9 +15,9 @@ app.get("/", (req, res) => {
     res.json({
         message: "ok",
         routes: [
-            "/auth/login",
-            "/auth/register",
-            "/auth/logout",
+            "/authClients/login",
+            "/authClients/register",
+            "/authClients/logout",
             "/users",
             "/users/:id",
             "/drivers",
@@ -43,6 +43,6 @@ app.use(function (err, req, res, next) {
     console.error(err.stack);
     res.status(500).json({
         status: res.statusCode,
-        message: "An error occured",
+        message: "A server error occured",
     });
 });
