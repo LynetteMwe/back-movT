@@ -52,6 +52,14 @@ router.all("/login", methodNotAllowed);
 // Create a new user
 router.post("/register", (req, res) => {
     const { username, contact, email, password } = req.body;
+
+    let errors = [];
+    if (!req.body?.username) errors.push("Field 'username' is required!");
+    if (!req.body?.contact) errors.push("Field 'contact' is required!");
+    if (!req.body?.email) errors.push("Field 'email' is required!");
+    if (!req.body?.password) errors.push("Field 'password' is required!");
+    if (errors.length > 0) return res.status(400).json({ errors });
+
     Client.create({
         username,
         contact,
