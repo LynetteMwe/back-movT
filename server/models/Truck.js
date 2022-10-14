@@ -24,6 +24,7 @@ const Truck = sequelize.define(
             type: DataTypes.INTEGER,
             required: true,
             allowNull: true,
+            unique: true,
             references: {
                 model: Driver,
                 key: "id"
