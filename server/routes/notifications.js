@@ -3,9 +3,34 @@ const Notification = require("../models/Notification");
 
 const router = express.Router();
 
+const serverError = (res, error) => {
+    // console.log(error);
+    if(error?.original?.code === "ER_NO_REFERENCED_ROW_2"){
+        
+        res.statusCode = error?.original?.code === "ER_NO_REFERENCED_ROW_2" ? 400 : 500;
+
+        let errors = []
+        if(res.statusCode === 400) errors.push("Client and Driver ID must be of existing users")
+
+        if (errors.length > 0) return res.status(400).json({ errors })
+
+    }
+
+    if(error?.original?.code === "ER_DUP_ENTRY"){
+        res.statusCode = error?.original?.code === 'ER_DUP_ENTRY' ? 400 : 500;
+
+        let errors = []
+        if(res.statusCode === 400) errors.push("There exists a notification with similar details")
+
+        if (errors.length > 0) return res.status(400).json({ errors })
+
+    }
+
+};
+
 // Get single notification by id
-router.get("/:pk", (req, res, next) => {
-  Notification.findByPk(req.params.pk)
+router.get("/:id(\\d+)", (req, res, next) => {
+  Notification.findByPk(req.params.id)
         .then(user => {
             if (!user)
                 return res.status(404).json({
@@ -26,6 +51,15 @@ router.get("/", async (req, res) => {
 
 // Create a new notification
 router.post("/", (req, res, next) => {
+    let errors = []
+
+    if(!req.body?.ClientId) errors.push("Client ID not included")
+    if(!req.body?.DriverId) errors.push("Driver ID not included")
+    if(!req.body?.message) errors.push("Message not included.")
+    if(!req.body?.status) errors.push("Status is missing.") 
+    if(errors.length > 0) return res.status(400).json({errors})
+
+
     const {  ClientId, DriverId, message, status } = req.body;
     Notification.create({
         ClientId,        
@@ -41,7 +75,7 @@ router.post("/", (req, res, next) => {
                 });
             res.json((user));
         })
-        // .catch(error => serverError(res, error));
+        .catch(error => serverError(res, error));
 });
 
 // Update a user
