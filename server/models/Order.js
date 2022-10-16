@@ -13,7 +13,7 @@ const Order = sequelize.define("Order", {
     ClientId: {    
         type: DataTypes.INTEGER,
         required: true,
-        allowNull: true,
+        allowNull: false,
         references: {
             model: Client,
             key: "id",
@@ -21,7 +21,7 @@ const Order = sequelize.define("Order", {
     DriverId:{
         type: DataTypes.INTEGER,
         required: true,
-        allowNull: true,
+        allowNull: false,
         references: {
             model: Driver,
             key: "id",

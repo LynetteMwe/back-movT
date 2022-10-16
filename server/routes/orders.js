@@ -4,9 +4,28 @@ const Order = require("../models/Order");
 const router = express.Router();
 // router.use("/orders", authenticate, ordersRoute);
 
-// Get single user by id
-router.get("/:pk", (req, res, next) => {
-  Order.findByPk(req.params.pk)
+const serverError = (res, error) =>{
+    if (error?.original?.code === "ER_NO_REFERENCED_ROW_2"){
+        res.statusCode = error?.original?.code === "ER_NO_REFERENCED_ROW_2" ? 400 : 500
+
+        let errors = []
+        if(res.statusCode === 400) errors.push("Client and Driver ID must be of existing users")
+        if(errors.length > 0) return res.status(400).json({errors})
+    }
+
+    if (error?.original?.code === "ER_DUP_ENTRY"){
+        res.statusCode = error?.original?.code === "ER_DUP_ENTRY" ? 400 : 500
+
+        let errors = []
+        if(res.statusCode === 400) errors.push("That order already exists")
+        if(errors.length > 0) return res.status(400).json({errors})
+    }
+
+    
+}
+
+router.get("/:order_id(\\d+)", (req, res, next) => {
+  Order.findByPk(req.params.order_id)
         .then(user => {
             if (!user)
                 return res.status(404).json({
@@ -17,14 +36,14 @@ router.get("/:pk", (req, res, next) => {
         })
         .catch(error => (res, error));
 });
-
+ 
 // Get all users
 router.get("/", async (req, res) => {
     const _ = await Order.findAll();
     users = _.map(user => (user));
     res.status(200).json(users);
 });
-
+ 
 // Create a new user
 router.post("/", (req, res, next) => {
     const {  ClientId, DriverId, description, origin, destination, amount, status } = req.body;
@@ -45,7 +64,7 @@ router.post("/", (req, res, next) => {
                 });
             res.json((user));
         })
-        // .catch(error => serverError(res, error));
+        .catch(error => serverError(res, error));
 });
 
 // Update a user
