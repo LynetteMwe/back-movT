@@ -19,10 +19,9 @@ const serverError = (res, error) =>{
         let errors = []
         if(res.statusCode === 400) errors.push("That order already exists")
         if(errors.length > 0) return res.status(400).json({errors})
-    }
-
-    
+    }    
 }
+
 
 router.get("/:order_id(\\d+)", (req, res, next) => {
   Order.findByPk(req.params.order_id)
@@ -36,6 +35,25 @@ router.get("/:order_id(\\d+)", (req, res, next) => {
         })
         .catch(error => (res, error));
 });
+
+// get all orders per client
+router.get("/clients/:ClientId(\\d+)", (req, res, next) => {
+  Order.findAll({where:{ClientId: req.params.ClientId}})  
+        .then(user => {
+            res.json((user));
+        })
+        .catch(error => (res, error));
+});
+
+// get all orders per driver
+router.get("/drivers/:DriverId(\\d+)", (req, res, next) => {
+    Order.findAll({where:{DriverId: req.params.DriverId}})  
+          .then(user => {
+              res.json((user));
+          })
+          .catch(error => (res, error));
+  });
+  
  
 // Get all users
 router.get("/", async (req, res) => {
