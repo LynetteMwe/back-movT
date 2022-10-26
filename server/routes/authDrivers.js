@@ -81,17 +81,19 @@ router.post("/register", (req, res) => {
 router.all("/register", methodNotAllowed);
 
 // Logout by deleting token
-router.post("/logout", authenticate, (req, res) => {
-    req.user
-        .update({ token: null })
-        .then(() => {
-            res.status(200).json({
-                status: res.statusCode,
-                message: "Logged out successfully!",
-            });
-        })
-        .catch(err => serverError(err));
+// Logout by deleting token
+router.post("/logout", authenticate, async (req, res) => {
+    user = await Driver.findByPk(req.user.id)
+      
+    user.update({ token: null })
+    .then(() => {
+        res.status(201).json({
+            status: res.statusCode,
+            message: "Logged out successfully!"
+        });
+    })
+    .catch(err => serverError(err));
 });
-router.all("/logout", methodNotAllowed);
-
+router.all("/logout", methodNotAllowed)
+ 
 module.exports = router;

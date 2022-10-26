@@ -79,7 +79,7 @@ router.post("/register", (req, res) => {
 });
 router.all("/register", methodNotAllowed);
 
-router.post("/changepassword"),
+router.put("/changepassword"),
     (req, res) => {
         Client.findOne({ where: { email: req.body?.email } }).then(
             async user => {
@@ -106,16 +106,17 @@ router.post("/changepassword"),
 router.all("/changepassword", methodNotAllowed);
 
 // Logout by deleting token
-router.post("/logout", authenticate, (req, res) => {
-    req.user
-        .update({ token: null })
-        .then(() => {
-            res.status(200).json({
-                status: res.statusCode,
-                message: "Logged out successfully!",
-            });
-        })
-        .catch(err => serverError(err));
+router.post("/logout", authenticate, async (req, res) => {
+    user = await Client.findByPk(req.user.id)
+    
+    user.update({ token: null })
+    .then(() => {
+        res.status(201).json({
+            status: res.statusCode,
+            message: "Logged out successfully!"
+        });
+    })
+    .catch(err => serverError(err));
 });
 router.all("/logout", methodNotAllowed);
 
