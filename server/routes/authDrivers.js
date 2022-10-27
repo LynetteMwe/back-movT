@@ -52,13 +52,15 @@ router.all("/login", methodNotAllowed);
 
 // Create a new user
 router.post("/register", (req, res) => {
-    const { username, contact, email, password } = req.body;
+    const { username, contact, email, password, vehicle_plate_no,service_type } = req.body;
 
     let errors = [];
     if (!req.body?.username) errors.push("Field 'username' is required!");
     if (!req.body?.contact) errors.push("Field 'contact' is required!");
     if (!req.body?.email) errors.push("Field 'email' is required!");
     if (!req.body?.password) errors.push("Field 'password' is required!");
+    if (!req.body?.vehicle_plate_no) errors.push("Field 'vehicle_plate_no' is required!");
+    if (!req.body?.service_type) errors.push("Field 'service_type' is required!");
     if (errors.length > 0) return res.status(400).json({ errors });
 
     Driver.create({
@@ -66,6 +68,8 @@ router.post("/register", (req, res) => {
         contact,
         email,
         password,
+        vehicle_plate_no,
+        service_type,
         token: generateToken(email),
     })
         .then(user => {

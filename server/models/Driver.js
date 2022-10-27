@@ -35,7 +35,7 @@ const Driver = sequelize.define("Driver", {
         set(value) {
             this.setDataValue("password", encryptPassword(value));
         },
-    },
+    },  
     token: {
         type: DataTypes.STRING,
         allowNull: true,
@@ -48,7 +48,16 @@ const Driver = sequelize.define("Driver", {
     resetTokenExpiry: {
         type: DataTypes.DATE,
         allowNull: true,
+    }, 
+    vehicle_plate_no: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false,
     },
+    service_type: { 
+        type: DataTypes.STRING,
+        allowNull: false,
+    }
 });
 
 // Create Driver table if it does not exist

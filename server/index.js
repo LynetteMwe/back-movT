@@ -68,6 +68,5 @@ app.use("/clients", authenticateClient, clientRoute);
 app.use("/orders", ordersRoute);
 
 app.use("/notifications", notificationsRoute);
-app.use("/trucks", truckRoute);
 
 module.exports = { app };
