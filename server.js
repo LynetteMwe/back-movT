@@ -3,9 +3,7 @@ const http = require("http");
 const { app } = require("./server/index");
 const methodNotAllowed = require("./server/middleware/methodNotAllowed");
 
-///////////////////////////////////////////////////////////
 const prettyjson = require('prettyjson'),
-    // express = require('express'),
     bodyParser = require('body-parser'),
     axios = require('axios'),
     config = require('./config'),
