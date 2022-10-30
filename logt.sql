@@ -24,10 +24,10 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `clients`
+-- Table structure for table `Clients`
 --
 
-CREATE TABLE IF NOT EXISTS `clients` (
+CREATE TABLE IF NOT EXISTS `Clients` (
   `id` int(11) NOT NULL,
   `username` varchar(255) NOT NULL,
   `contact` varchar(255) NOT NULL,
@@ -41,10 +41,10 @@ CREATE TABLE IF NOT EXISTS `clients` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `clients`
+-- Dumping data for table `Clients`
 --
 
-INSERT INTO `clients` (`id`, `username`, `contact`, `email`, `password`, `token`, `resetToken`, `resetTokenExpiry`, `createdAt`, `updatedAt`) VALUES
+INSERT INTO `Clients` (`id`, `username`, `contact`, `email`, `password`, `token`, `resetToken`, `resetTokenExpiry`, `createdAt`, `updatedAt`) VALUES
 (1, 'Rosy2', '070923113824', 'rosy2@gmail.com', '$2b$10$XamBYCdbmXwJ.J9vAlH1vOfAqgO0NcvcdBQd7rwYiiw0spL/KLpQe', '$2b$10$hGqwLvI.RZC3zzfAfeN71OGGTBc4dTNKKr5DPDX/2VXIfHnT49itW', NULL, NULL, '2022-10-06 01:21:54', '2022-10-06 01:21:54'),
 (2, 'Rosy3', '0709323113824', 'rosy3@gmail.com', '$2b$10$ukiN8MKUGbL2s3bDUqfxxuKggiQljpJ7vTa5BLx1hykQ03sr2nPOy', '$2b$10$jJg3r3PYKer.g9W3aFJXmeNtFotPI7/Jz6UzLqylyvdxdpjUWZW.2', NULL, NULL, '2022-10-06 01:22:07', '2022-10-06 01:22:07'),
 (3, 'Rick', '070923113821', 'rick@gmail.com', '$2b$10$R08EhmwFyzZsQve/NZAzO.A6Qcr5BiPkIa0WqIiTU4sLnL/lacv/G', '$2b$10$uqYu/j54e62qRWJzxgbC3eP4x5OBdGX1ge5pR10vQ0ILApanOPI3i', NULL, NULL, '2022-10-06 01:43:22', '2022-10-26 15:01:54'),
@@ -71,10 +71,10 @@ INSERT INTO `clients` (`id`, `username`, `contact`, `email`, `password`, `token`
 -- --------------------------------------------------------
 
 --
--- Table structure for table `drivers`
+-- Table structure for table `Drivers`
 --
 
-CREATE TABLE IF NOT EXISTS `drivers` (
+CREATE TABLE IF NOT EXISTS `Drivers` (
   `id` int(11) NOT NULL,
   `username` varchar(255) NOT NULL,
   `contact` varchar(255) NOT NULL,
@@ -90,10 +90,10 @@ CREATE TABLE IF NOT EXISTS `drivers` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `drivers`
+-- Dumping data for table `Drivers`
 --
 
-INSERT INTO `drivers` (`id`, `username`, `contact`, `email`, `password`, `token`, `resetToken`, `resetTokenExpiry`, `createdAt`, `updatedAt`, `vehicle_plate_no`, `service_type`) VALUES
+INSERT INTO `Drivers` (`id`, `username`, `contact`, `email`, `password`, `token`, `resetToken`, `resetTokenExpiry`, `createdAt`, `updatedAt`, `vehicle_plate_no`, `service_type`) VALUES
 (1, 'Rich', '+25472038954', 'Rich@gmail.com', '$2b$10$QmZRiFpho260Yz984ZjuO.FcgMIKgx65/nhOyEJQwvFSCW9laKoIe', '$2b$10$g.KA74/7CjRzVBKwrSxNZOt2NkJ6cUN.xFE2/eMbl0r1.nJgb56YS', NULL, NULL, '2022-10-02 07:52:42', '2022-10-27 04:44:00', NULL, NULL),
 (2, 'Rech', '+2547238954', 'Rech@gmail.com', '$2b$10$ZVaon5ETlyf39t9010Uflu7wy/gicDnwAfY.G.BNYkZOvZx/qRguC', '$2b$10$5g.gRF2QK9gJN09MDd2ZFO9SAkPtTnFVahq2kp6pVVYA/Pwj5uPfm', NULL, NULL, '2022-10-02 22:08:46', '2022-10-02 22:08:46', NULL, NULL),
 (4, 'Syo', '+25470238954', 'Syo@gmail.com', '$2b$10$iZJJExY.0DLWQ74Na3W2.u2DwB13TEzfFPSnqpjls6ocZXcvRBdrK', '$2b$10$reF6AE6cexqbByrO4yuUj.T1FSvYsVjmJ3bJOIBPbN/IC79YrYMfe', NULL, NULL, '2022-10-03 12:10:46', '2022-10-03 12:10:46', NULL, NULL),
@@ -109,10 +109,10 @@ INSERT INTO `drivers` (`id`, `username`, `contact`, `email`, `password`, `token`
 -- --------------------------------------------------------
 
 --
--- Table structure for table `notifications`
+-- Table structure for table `Notifications`
 --
 
-CREATE TABLE IF NOT EXISTS `notifications` (
+CREATE TABLE IF NOT EXISTS `Notifications` (
   `id` int(11) NOT NULL,
   `ClientId` int(11) DEFAULT NULL,
   `DriverId` int(11) DEFAULT NULL,
@@ -123,10 +123,10 @@ CREATE TABLE IF NOT EXISTS `notifications` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `notifications`
+-- Dumping data for table `Notifications`
 --
 
-INSERT INTO `notifications` (`id`, `ClientId`, `DriverId`, `message`, `status`, `createdAt`, `updatedAt`) VALUES
+INSERT INTO `Notifications` (`id`, `ClientId`, `DriverId`, `message`, `status`, `createdAt`, `updatedAt`) VALUES
 (1, 1, 1, 'Driver is here', 1, '2022-10-06 01:32:13', '2022-10-06 01:32:13'),
 (4, 1, 8, 'Driver is here', 1, '2022-10-06 01:46:07', '2022-10-06 01:46:07'),
 (5, 3, 8, 'Driver is here', 1, '2022-10-06 01:55:11', '2022-10-06 01:55:11'),
@@ -140,10 +140,10 @@ INSERT INTO `notifications` (`id`, `ClientId`, `DriverId`, `message`, `status`, 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `orders`
+-- Table structure for table `Orders`
 --
 
-CREATE TABLE IF NOT EXISTS `orders` (
+CREATE TABLE IF NOT EXISTS `Orders` (
   `order_id` int(11) NOT NULL,
   `ClientId` int(11) NOT NULL,
   `DriverId` int(11) NOT NULL,
@@ -157,10 +157,10 @@ CREATE TABLE IF NOT EXISTS `orders` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `orders`
+-- Dumping data for table `Orders`
 --
 
-INSERT INTO `orders` (`order_id`, `ClientId`, `DriverId`, `description`, `origin`, `destination`, `amount`, `status`, `createdAt`, `updatedAt`) VALUES
+INSERT INTO `Orders` (`order_id`, `ClientId`, `DriverId`, `description`, `origin`, `destination`, `amount`, `status`, `createdAt`, `updatedAt`) VALUES
 (1, 1, 1, 'Building Materials Sand', 'Ongata Rongai', 'Kiserian', 200, 1, '2022-10-16 13:37:33', '2022-10-16 13:37:33'),
 (3, 1, 2, 'Building Materials Sand', 'Ongata Rongai', 'Kiserian', 200, 1, '2022-10-16 13:38:12', '2022-10-16 13:38:12'),
 (11, 1, 6, 'Building Materials Sand', 'Ongata Rongai', 'Kiserian', 200, 1, '2022-10-16 13:57:04', '2022-10-16 13:57:04'),
@@ -173,35 +173,35 @@ INSERT INTO `orders` (`order_id`, `ClientId`, `DriverId`, `description`, `origin
 --
 
 --
--- Indexes for table `clients`
+-- Indexes for table `Clients`
 --
-ALTER TABLE `clients`
+ALTER TABLE `Clients`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `username` (`username`),
   ADD UNIQUE KEY `contact` (`contact`),
   ADD UNIQUE KEY `email` (`email`);
 
 --
--- Indexes for table `drivers`
+-- Indexes for table `Drivers`
 --
-ALTER TABLE `drivers`
+ALTER TABLE `Drivers`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `username` (`username`),
   ADD UNIQUE KEY `contact` (`contact`),
   ADD UNIQUE KEY `email` (`email`);
 
 --
--- Indexes for table `notifications`
+-- Indexes for table `Notifications`
 --
-ALTER TABLE `notifications`
+ALTER TABLE `Notifications`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `Notifications_DriverId_ClientId_unique` (`ClientId`,`DriverId`),
   ADD KEY `DriverId` (`DriverId`);
 
 --
--- Indexes for table `orders`
+-- Indexes for table `Orders`
 --
-ALTER TABLE `orders`
+ALTER TABLE `Orders`
   ADD PRIMARY KEY (`order_id`),
   ADD UNIQUE KEY `Orders_DriverId_ClientId_unique` (`ClientId`,`DriverId`),
   ADD KEY `DriverId` (`DriverId`);
@@ -211,27 +211,27 @@ ALTER TABLE `orders`
 --
 
 --
--- AUTO_INCREMENT for table `clients`
+-- AUTO_INCREMENT for table `Clients`
 --
-ALTER TABLE `clients`
+ALTER TABLE `Clients`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
--- AUTO_INCREMENT for table `drivers`
+-- AUTO_INCREMENT for table `Drivers`
 --
-ALTER TABLE `drivers`
+ALTER TABLE `Drivers`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
--- AUTO_INCREMENT for table `notifications`
+-- AUTO_INCREMENT for table `Notifications`
 --
-ALTER TABLE `notifications`
+ALTER TABLE `Notifications`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
--- AUTO_INCREMENT for table `orders`
+-- AUTO_INCREMENT for table `Orders`
 --
-ALTER TABLE `orders`
+ALTER TABLE `Orders`
   MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
@@ -239,18 +239,18 @@ ALTER TABLE `orders`
 --
 
 --
--- Constraints for table `notifications`
+-- Constraints for table `Notifications`
 --
-ALTER TABLE `notifications`
-  ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`ClientId`) REFERENCES `clients` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `notifications_ibfk_2` FOREIGN KEY (`DriverId`) REFERENCES `drivers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Notifications`
+  ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`ClientId`) REFERENCES `Clients` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `notifications_ibfk_2` FOREIGN KEY (`DriverId`) REFERENCES `Drivers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `orders`
+-- Constraints for table `Orders`
 --
-ALTER TABLE `orders`
-  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`ClientId`) REFERENCES `clients` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`DriverId`) REFERENCES `drivers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Orders`
+  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`ClientId`) REFERENCES `Clients` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`DriverId`) REFERENCES `Drivers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
