@@ -93,8 +93,36 @@ app.post("/mpesa", function (req, res) {
 });
 
 app.post("/callback_url/", function(req, res) {
-    console.log(req.body)
-    return res.status(200).json("ok")
+    const data = req.body?.Body?.stkCallback;
+    if (data?.ResultCode === 0) {
+        const items = data?.CallbackMetadata?.Item;
+        console.log(items)
+        let Amount, MpesaReceiptNumber, TransactionDate, PhoneNumber;
+        items.forEach(item => {
+            if (item.Name == "Amount"){
+                Amount = item.Value
+            }
+            else if (item.Name == "MpesaReceiptNumber"){
+                MpesaReceiptNumber = item.Value
+            }           
+            else if (item.Name == "TransactionDate"){
+                TransactionDate = item.Value
+            }
+            else if (item.Name == "PhoneNumber"){
+                PhoneNumber = item.Value
+            }
+        })
+        console.log(Amount)
+        console.log(MpesaReceiptNumber)
+        console.log(TransactionDate)
+        console.log(PhoneNumber)
+
+        return res.status(200).json("ok")
+
+    } else {
+        // an error occurred
+        return res.status(400).json("Failed")
+    }
 })
 
 // C2B ConfirmationURL - /api/v1/c2b/confirmation
