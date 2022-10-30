@@ -5,7 +5,7 @@ const DB_HOST = process.env.DB_HOST;
 const DB_NAME = process.env.DB_NAME;
 const DB_USERNAME = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
-const production = process.env.PRODUCTION;
+const production = process.env.NODE_ENV === "production";
 
 const sequelize = new Sequelize(DB_NAME, DB_USERNAME, DB_PASSWORD, {
     dialect: "mysql",
