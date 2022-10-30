@@ -27,7 +27,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `clients`
 --
 
-CREATE TABLE `clients` (
+CREATE TABLE IF NOT EXISTS `clients` (
   `id` int(11) NOT NULL,
   `username` varchar(255) NOT NULL,
   `contact` varchar(255) NOT NULL,
@@ -74,7 +74,7 @@ INSERT INTO `clients` (`id`, `username`, `contact`, `email`, `password`, `token`
 -- Table structure for table `drivers`
 --
 
-CREATE TABLE `drivers` (
+CREATE TABLE IF NOT EXISTS `drivers` (
   `id` int(11) NOT NULL,
   `username` varchar(255) NOT NULL,
   `contact` varchar(255) NOT NULL,
@@ -112,7 +112,7 @@ INSERT INTO `drivers` (`id`, `username`, `contact`, `email`, `password`, `token`
 -- Table structure for table `notifications`
 --
 
-CREATE TABLE `notifications` (
+CREATE TABLE IF NOT EXISTS `notifications` (
   `id` int(11) NOT NULL,
   `ClientId` int(11) DEFAULT NULL,
   `DriverId` int(11) DEFAULT NULL,
@@ -143,7 +143,7 @@ INSERT INTO `notifications` (`id`, `ClientId`, `DriverId`, `message`, `status`, 
 -- Table structure for table `orders`
 --
 
-CREATE TABLE `orders` (
+CREATE TABLE IF NOT EXISTS `orders` (
   `order_id` int(11) NOT NULL,
   `ClientId` int(11) NOT NULL,
   `DriverId` int(11) NOT NULL,
