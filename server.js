@@ -92,6 +92,11 @@ app.post("/mpesa", function (req, res) {
     }
 });
 
+app.post("/callback_url/", function(req, res) {
+    console.log(req.body)
+    return res.status(200).json("ok")
+})
+
 // C2B ConfirmationURL - /api/v1/c2b/confirmation
 app.post('/api/v1/c2b/confirmation', function (req, res) {
     console.log('-----------C2B CONFIRMATION REQUEST------------');
