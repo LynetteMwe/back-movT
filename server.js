@@ -75,7 +75,7 @@ app.post("/mpesa", function (req, res) {
                 "PartyA": req.body.phoneNumber,                     
                 "PartyB": shortcode,                                   
                 "PhoneNumber": req.body.phoneNumber,                
-                "CallBackURL": "https://b671-102-219-208-18.ngrok.io", // confirmation Url
+                "CallBackURL": process.env.CALLBACK_URL, // confirmation Url
                 "AccountReference": "Example",                      
                 "TransactionDesc": "Testing mpesa"                  
             }

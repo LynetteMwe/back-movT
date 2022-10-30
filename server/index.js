@@ -4,7 +4,6 @@ const SQ = require("sequelize");
 const BearerStrategy = require("passport-http-bearer").Strategy;
 const morgan = require("morgan");
 const {
-    authRoute,
     authClientRoute,
     authDriverRoute,
     clientRoute,
@@ -68,5 +67,6 @@ app.use("/clients", authenticateClient, clientRoute);
 app.use("/orders", ordersRoute);
 
 app.use("/notifications", notificationsRoute);
+
 
 module.exports = { app };
