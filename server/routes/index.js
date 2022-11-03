@@ -4,6 +4,7 @@ const clientRoute = require("./clients");
 const driverRoute = require("./drivers");
 const ordersRoute = require("./orders");
 const notificationsRoute = require("./notifications");
+const transactionsRoute = require('./transactions')
 
 
 module.exports = {
@@ -13,4 +14,5 @@ module.exports = {
     driverRoute,
     ordersRoute,
     notificationsRoute,
+    transactionsRoute
 };

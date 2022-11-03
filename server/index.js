@@ -12,6 +12,7 @@ const {
     notificationsRoute,
     truckRoute,
     userRoute,
+    transactionsRoute
 } = require("./routes");
 const Client = require("./models/Client");
 const Driver = require("./models/Driver");
@@ -65,6 +66,8 @@ app.use("/clients/orders", authenticateClient, ordersRoute);
 app.use("/clients", authenticateClient, clientRoute);
 
 app.use("/orders", ordersRoute);
+
+app.use('/mpesa', transactionsRoute)
 
 app.use("/notifications", notificationsRoute);
 
