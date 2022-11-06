@@ -21,25 +21,28 @@ const isPassword = password => {
 };
 
 const serverError = (res, error) => {
-    // console.log(error);
     res.statusCode = error?.original?.code === "ER_DUP_ENTRY" ? 400 : 500;
 
-    // message = error?.original?.sqlMessage
-
-    let errors = []
-    if(res.statusCode === 400) errors.push("There exists a user with similar username, contact or email")
-    // if (message === `Duplicate entry ${username} for key 'username'`) errors.push("There exists a user with similar username.")
-
-    if (errors.length > 0) return res.status(400).json({ errors })
+    // Check for Sequelize Errors
+    if (error?.errors) {
+        const errors = error.errors
+        let lst = []
+        errors?.forEach(error => {
+            // extract all the error info you need
+            const { type, message, validatorKey, path, value } = error;
+            lst.push({type, message, validatorKey, path, value})
+        })
+        return res.status(400).json(lst)
+    }
     
-    // return res.json({
-    //     status: res.statusCode, // Internal Server Error
-    //     error: {
-    //         name: error?.name,
-    //         code: error?.original?.code,
-    //         message: error?.original?.sqlMessage,
-    //     },
-    // });
+    return res.json({
+        status: res.statusCode, // Internal Server Error
+        error: {
+            name: error?.name,
+            code: error?.original?.code,
+            message: error?.original?.sqlMessage,
+        },
+    });
 };
 
 function encryptPassword(plainText) {

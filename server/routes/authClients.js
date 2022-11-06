@@ -52,12 +52,16 @@ router.all("/login", methodNotAllowed);
 // Create a new user
 router.post("/register", (req, res) => {
     const { username, contact, email, password } = req.body;
+    // longer than 8 characters, must have at least one uppercase, one lowercase and one character
+    const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
 
     let errors = [];
     if (!req.body?.username) errors.push("Field 'username' is required!");
     if (!req.body?.contact) errors.push("Field 'contact' is required!");
     if (!req.body?.email) errors.push("Field 'email' is required!");
     if (!req.body?.password) errors.push("Field 'password' is required!");
+    if (req.body.password !== '' && password.match(pwRegex)) errors.push("Password requirements not met")
+    
     if (errors.length > 0) return res.status(400).json({ errors });
 
     Client.create({

@@ -1,5 +1,7 @@
 const express = require("express");
 const Order = require("../models/Order");
+const { Op, col, fn, where: SqWhere, cast } = require("sequelize")
+const moment = require('moment')
 
 const router = express.Router();
 // router.use("/orders", authenticate, ordersRoute);
@@ -22,9 +24,13 @@ const serverError = (res, error) =>{
     }    
 }
 
+function formatDate(date){
+    const dt = moment(date).format()
+    return dt
+}
 
 router.get("/:order_id(\\d+)", (req, res, next) => {
-  Order.findByPk(req.params.order_id)
+    Order.findByPk(req.params.order_id)
         .then(user => {
             if (!user)
                 return res.status(404).json({
@@ -38,11 +44,38 @@ router.get("/:order_id(\\d+)", (req, res, next) => {
 
 // get all orders per client
 router.get("/clients/:ClientId(\\d+)", (req, res, next) => {
-  Order.findAll({where:{ClientId: req.params.ClientId}})  
-        .then(user => {
-            res.json((user));
+    let start_date = req.query.start_date
+    let end_date = req.query.end_date // default => new Date().format("dd-mm-yyyy")
+    let client_id = req.params.ClientId
+
+    let where = {
+        ClientId: client_id,
+    }
+
+    if ((start_date && end_date) || (start_date && !end_date)) {
+        where[Op.and] = {
+            createdAt: {
+                [Op.between]: [formatDate(start_date), formatDate(end_date)]
+            },
+        };
+    } else if (!start_date && end_date){
+        where[Op.and] = {
+            createdAt: {
+                [Op.lte]: formatDate(end_date)
+            },
+        }
+    }
+
+    Order.findAll({ where })
+        .then(orders => {
+            res.json(orders);
         })
-        .catch(error => (res, error));
+        .catch(error => {
+            console.error("Error:", error)
+            res.status(500).json({
+                "message": "A server error occurred!"
+            })
+        });
 });
 
 // get all orders per driver
