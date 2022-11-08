@@ -28,6 +28,14 @@ router.post("/", authenticate, async (req, res) => {
 		return res.status(400).json({ error: "Origin field required!" });
 	if (!destination)
 		return res.status(400).json({ error: "Destination field required!" });
+	if (!destinationLat)
+		return res
+			.status(400)
+			.json({ error: "Destination Latitude field required!" });
+	if (!destinationLng)
+		return res
+			.status(400)
+			.json({ error: "Destination Longitude field required!" });
 	if (!carType)
 		return res.status(400).json({ error: "CarType field required!" });
 
