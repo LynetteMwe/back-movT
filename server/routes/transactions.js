@@ -11,13 +11,9 @@ router.post("/", authenticate, async (req, res) => {
 		phone,
 		amount,
 		origin,
-		originLat,
-		originLng,
 		destination,
-		destinationLat,
-		destinationLng,
 		carType,
-		description,
+		itemType,
 	} = req.body;
 	const ClientId = req.user.id;
 
@@ -26,36 +22,31 @@ router.post("/", authenticate, async (req, res) => {
 		return res.status(400).json({ error: "Amount field required!" });
 	if (!destination)
 		return res.status(400).json({ error: "Destination field required!" });
-	if (!destinationLat)
-		return res
-			.status(400)
-			.json({ error: "Destination Latitude field required!" });
-	if (!destinationLng)
-		return res
-			.status(400)
-			.json({ error: "Destination Longitude field required!" });
 	if (!carType)
 		return res.status(400).json({ error: "CarType field required!" });
+
+	const { name: origName, latitude: origLat, longitude: origLng } = origin || { name: undefined, latitude: undefined, longitude: undefined };
+	const { name: destName, latitude: destLat, longitude: destLng } = destination || { name: undefined, latitude: undefined, longitude: undefined };
 
 	// save Order to database
 	const order = await Order.create({
 		ClientId,
-		origin: origin,
-		originLat: originLat, // originCoords = `${lat} ${lng}`
-		originLng: originLng,
-		destination: destination,
-		destinationLat: destinationLat, // destinationCoords = `${lat} ${lng}`
-		destinationLng: destinationLng,
+		origin: origName,
+		originLat: origLat, // originCoords = `${lat} ${lng}`
+		originLng: origLng,
+		destination: destName,
+		destinationLat: destLat, // destinationCoords = `${lat} ${lng}`
+		destinationLng: destLng,
 		amount: amount,
-		description: description,
+		description: itemType,
 		carType: carType,
 	});
 
 	const data = await send_stk_push(phone, amount);
 	// confirm amount paid then set order to paid
 	// order.update({ paid: true })
-	// return res.status(200).json({order, stkData: data});
-	return res.status(200).json(data); // --> can remove after testing
+	return res.status(200).json({order, stkData: data});
+	// return res.status(200).json(data); // --> can remove after testing
 });
 router.all("/", methodNotAllowed);
 
