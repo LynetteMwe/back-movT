@@ -24,8 +24,6 @@ router.post("/", authenticate, async (req, res) => {
 	if (!phone) return res.status(400).json({ error: "Phone field required!" });
 	if (!amount)
 		return res.status(400).json({ error: "Amount field required!" });
-	if (!origin)
-		return res.status(400).json({ error: "Origin field required!" });
 	if (!destination)
 		return res.status(400).json({ error: "Destination field required!" });
 	if (!destinationLat)
