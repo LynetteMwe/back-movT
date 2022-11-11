@@ -28,7 +28,7 @@ const Order = sequelize.define("Order", {
 			key: "id",
 		},
 	},
-	description: {
+	itemType: {
 		type: DataTypes.STRING,
 		// allowNull: false,
 	},
@@ -52,6 +52,9 @@ const Order = sequelize.define("Order", {
 		type: DataTypes.DECIMAL(16, 12),
 	},
 	carType: {
+		type: DataTypes.STRING,
+	},
+	type: {
 		type: DataTypes.STRING,
 	},
 	amount: {

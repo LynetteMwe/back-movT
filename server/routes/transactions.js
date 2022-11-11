@@ -7,14 +7,7 @@ const methodNotAllowed = require("../middleware/methodNotAllowed");
 const router = express.Router();
 
 router.post("/", authenticate, async (req, res) => {
-	const {
-		phone,
-		amount,
-		origin,
-		destination,
-		carType,
-		itemType,
-	} = req.body;
+	const { phone, amount, origin, destination, carType, itemType } = req.body;
 	const ClientId = req.user.id;
 
 	if (!phone) return res.status(400).json({ error: "Phone field required!" });
@@ -22,11 +15,31 @@ router.post("/", authenticate, async (req, res) => {
 		return res.status(400).json({ error: "Amount field required!" });
 	if (!destination)
 		return res.status(400).json({ error: "Destination field required!" });
-	if (!carType)
-		return res.status(400).json({ error: "CarType field required!" });
+	// if (!carType)
+	// return res.status(400).json({ error: "CarType field required!" });
 
-	const { name: origName, latitude: origLat, longitude: origLng } = origin || { name: undefined, latitude: undefined, longitude: undefined };
-	const { name: destName, latitude: destLat, longitude: destLng } = destination || { name: undefined, latitude: undefined, longitude: undefined };
+	const {
+		name: origName,
+		latitude: origLat,
+		longitude: origLng,
+	} = origin || {
+		name: undefined,
+		latitude: undefined,
+		longitude: undefined,
+	};
+	const {
+		name: destName,
+		latitude: destLat,
+		longitude: destLng,
+	} = destination || {
+		name: undefined,
+		latitude: undefined,
+		longitude: undefined,
+	};
+
+	const data = await send_stk_push(phone, 1);
+	// confirm amount paid then set order to paid
+	// order.update({ paid: true })
 
 	// save Order to database
 	const order = await Order.create({
@@ -38,14 +51,11 @@ router.post("/", authenticate, async (req, res) => {
 		destinationLat: destLat, // destinationCoords = `${lat} ${lng}`
 		destinationLng: destLng,
 		amount: amount,
-		description: itemType,
+		itemType: itemType,
 		carType: carType,
 	});
 
-	const data = await send_stk_push(phone, amount);
-	// confirm amount paid then set order to paid
-	// order.update({ paid: true })
-	return res.status(200).json({order, stkData: data});
+	return res.status(200).json({ order, stkData: data });
 	// return res.status(200).json(data); // --> can remove after testing
 });
 router.all("/", methodNotAllowed);
