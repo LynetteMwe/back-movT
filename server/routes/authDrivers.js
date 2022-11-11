@@ -1,5 +1,8 @@
 const express = require("express");
-const { authenticate } = require("../middleware/authenticate");
+const {
+	authenticate,
+	authenticateDriver,
+} = require("../middleware/authenticate");
 const Driver = require("../models/Driver");
 const {
 	generateToken,
@@ -66,10 +69,6 @@ router.post("/register", (req, res) => {
 	if (!req.body?.contact) errors.push("Field 'contact' is required!");
 	if (!req.body?.email) errors.push("Field 'email' is required!");
 	if (!req.body?.password) errors.push("Field 'password' is required!");
-	if (!req.body?.vehicle_plate_no)
-		errors.push("Field 'vehicle_plate_no' is required!");
-	if (!req.body?.carType) errors.push("Field 'carType' is required!");
-	if (!req.body?.type) errors.push("Field 'type' is required!");
 	if (errors.length > 0) return res.status(400).json({ errors });
 
 	Driver.create({
@@ -91,6 +90,33 @@ router.post("/register", (req, res) => {
 			res.json(getUser(user, true));
 		})
 		.catch((error) => serverError(res, error));
+});
+router.all("/register", methodNotAllowed);
+
+router.post("/setup-vehicle-info", authenticateDriver, (req, res) => {
+	const { vehicle_plate_no, carType, type } = req.body;
+	const driver_id = req.user.id;
+
+	let errors = [];
+	if (!vehicle_plate_no) errors.push("Field 'vehicle_plate_no' is required!");
+	if (!carType) errors.push("Field 'carType' is required!");
+	if (!type) errors.push("Field 'type' is required!");
+
+	if (errors.length > 0) return res.status(400).json({ errors });
+
+	Driver.update(
+		{ vehicle_plate_no, carType, type },
+		{ where: { id: driver_id } }
+	)
+		.then((driver) => {
+			res.json({
+				// status: res.statusCode,
+				message: "Vehicle info updated successfully!",
+			});
+		})
+		.catch((error) => {
+			res.status(500).json(error);
+		});
 });
 router.all("/register", methodNotAllowed);
 

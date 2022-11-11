@@ -51,11 +51,9 @@ const Driver = sequelize.define("Driver", {
 	vehicle_plate_no: {
 		type: DataTypes.STRING,
 		unique: true,
-		allowNull: false,
 	},
 	carType: {
 		type: DataTypes.STRING,
-		allowNull: false,
 	},
 	type: {
 		type: DataTypes.STRING,
