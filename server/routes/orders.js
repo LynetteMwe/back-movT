@@ -7,10 +7,12 @@ const {
 	authenticateClient,
 } = require("../middleware/authenticate");
 const Driver = require("../models/Driver");
-const { sendNotification } = require("../services/notifications");
+const {
+	sendNotificationToDriver,
+	sendNotificationToClient,
+} = require("../services/notifications");
 
 const router = express.Router();
-// router.use("/orders", authenticate, ordersRoute);
 
 const serverError = (res, error) => {
 	if (error?.original?.code === "ER_NO_REFERENCED_ROW_2") {
@@ -175,71 +177,115 @@ router.get("/placed", authenticateDriver, async (req, res) => {
 	return res.status(200).json(placed_orders);
 });
 
-////okay
 router.post("/accept/:order_id(\\d+)", authenticateDriver, (req, res) => {
-	Order.update(
-		{ status: "accepted", DriverId: req.user.id },
-		{ where: { order_id: req.params.order_id } }
-	)
-		.then((order) => {
-			res.json({
-				accepted: true,
+	// Find an order by its primary key `id`
+	Order.findByPk(req.params.order_id)
+		.then(async (order) => {
+			if (order === null) {
+				return res.status(404).json({
+					status: res.statusCode, // Not Found
+					error: "Order not found!",
+				});
+			}
+
+			// if order is found, update the order
+			await order.update({ status: "accepted", DriverId: req.user.id });
+
+			sendNotificationToClient(order.ClientId, {
+				title: "Order Accepted",
+				body: `Your order[id=${order.order_id}] has been accepted by ${req.user.username}`,
+				data: { order, driver: req.user },
 			});
+
+			return res.status(200).json(order);
 		})
 		.catch((error) => {
 			console.log(error);
-			res.status(500).json(error);
-		});
-});
-
-router.post("/pick/:order_id(\\d+)", authenticateDriver, (req, res) => {
-	Order.update(
-		{ status: "picked" },
-		{ where: { order_id: req.params.order_id } }
-	)
-		.then((order) => {
-			res.json({
-				picked: true,
-			});
-			// also trigger notification since status has changed
-		})
-		.catch((error) => {
-			console.log(error);
-			res.status(500).json(error);
-		});
-});
-
-router.post("/deliver/:order_id(\\d+)", authenticateDriver, (req, res) => {
-	Order.update(
-		{ status: "delivered" },
-		{ where: { order_id: req.params.order_id } }
-	)
-		.then((order) => {
-			res.json({
-				delivered: true,
-			});
-
-			// trigger notification
-		})
-		.catch((error) => {
-			console.log(error);
-			res.status(500).json(error);
+			return res.status(500).json(error);
 		});
 });
 
 router.post("/cancel/:order_id(\\d+)", authenticateDriver, (req, res) => {
-	Order.update(
-		{ status: "placed", DriverId: null },
-		{ where: { order_id: req.params.order_id } }
-	)
-		.then((order) => {
-			res.json({
-				canceled: true,
+	// Find an order by its primary key `id`
+	Order.findByPk(req.params.order_id)
+		.then(async (order) => {
+			if (order === null) {
+				return res.status(404).json({
+					status: res.statusCode, // Not Found
+					error: "Order not found!",
+				});
+			}
+
+			// if order is found, update the order
+			await order.update({ status: "cancelled", DriverId: null });
+
+			sendNotificationToClient(order.ClientId, {
+				title: "Order Cancelled",
+				body: `Your order[id=${order.order_id}] has been cancelled by ${req.user.username}`,
+				data: { order, driver: req.user },
 			});
+
+			return res.status(200).json(order);
 		})
 		.catch((error) => {
 			console.log(error);
-			res.status(500).json(error);
+			return res.status(500).json(error);
+		});
+});
+
+router.post("/pick/:order_id(\\d+)", authenticateDriver, (req, res) => {
+	// Find an order by its primary key `id`
+	Order.findByPk(req.params.order_id)
+		.then(async (order) => {
+			if (order === null) {
+				return res.status(404).json({
+					status: res.statusCode, // Not Found
+					error: "Order not found!",
+				});
+			}
+
+			// if order is found, update the order
+			await order.update({ status: "picked", DriverId: req.user.id });
+
+			sendNotificationToClient(order.ClientId, {
+				title: "Order Picked",
+				body: `Your order[id=${order.order_id}] has been picked by ${req.user.username}`,
+				data: { order, driver: req.user },
+			});
+
+			return res.status(200).json(order);
+		})
+		.catch((error) => {
+			console.log(error);
+			return res.status(500).json(error);
+		});
+});
+
+router.post("/deliver/:order_id(\\d+)", authenticateDriver, (req, res) => {
+	// Find an order by its primary key `id`
+	Order.findByPk(req.params.order_id)
+		.then(async (order) => {
+			if (order === null) {
+				return res.status(404).json({
+					status: res.statusCode, // Not Found
+					error: "Order not found!",
+				});
+			}
+
+			// if order is found, update the order
+			await order.update({ status: "delivered", DriverId: req.user.id });
+
+			sendNotificationToClient(order.ClientId, {
+				title: "Order Delivered",
+				body: `Your order[id=${order.order_id}] has been delivered by ${req.user.username}`,
+				data: { order, driver: req.user },
+			});
+
+			return res.status(200).json(order);
+		})
+		.catch((error) => {
+			console.log(error);
+			return res.status(500).json(error);
 		});
 });
 

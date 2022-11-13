@@ -19,6 +19,7 @@ const Driver = require("./models/Driver");
 const {
 	authenticateClient,
 	authenticateDriver,
+	authenticate,
 } = require("./middleware/authenticate");
 
 passport.use(
@@ -70,5 +71,37 @@ app.use("/orders", ordersRoute);
 app.use("/payments", transactionsRoute);
 
 app.use("/notifications", notificationsRoute);
+
+app.post("/expo-push-token", authenticate, async (req, res) => {
+	const pushToken = req.body.expoPushToken;
+	const driver_id = req.body.DriverId;
+	const client_id = req.body.ClientId;
+
+	if (!pushToken) {
+		return res.status(400).send({
+			status: res.statusCode,
+			error: "No expoPushToken provided",
+		});
+	}
+
+	if (!driver_id && !client_id) {
+		return res.status(400).json({
+			status: res.statusCode,
+			error: "Either DriverId or ClientId should be provided",
+		});
+	}
+
+	let user;
+	try {
+		if (driver_id) user = await Driver.findByPk(driver_id);
+		else if (client_id) user = await Client.findByPk(client_id);
+
+		await user.update({ resetToken: pushToken });
+		return res.status(200).json("Push token updated!");
+	} catch (err) {
+		console.log(err);
+		return res.status(500).json("Failed to update push token");
+	}
+});
 
 module.exports = { app };
