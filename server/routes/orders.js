@@ -2,8 +2,12 @@ const express = require("express");
 const Order = require("../models/Order");
 const { Op, col, fn, where: SqWhere, cast } = require("sequelize");
 const moment = require("moment");
-const { authenticateDriver } = require("../middleware/authenticate");
+const {
+	authenticateDriver,
+	authenticateClient,
+} = require("../middleware/authenticate");
 const Driver = require("../models/Driver");
+const { sendNotification } = require("../services/notifications");
 
 const router = express.Router();
 // router.use("/orders", authenticate, ordersRoute);
@@ -47,7 +51,7 @@ router.get("/:order_id(\\d+)", (req, res, next) => {
 });
 
 // get all orders per client
-router.get("/clients/:ClientId(\\d+)", (req, res, next) => {
+router.get("/clients/:ClientId(\\d+)", authenticateClient, (req, res, next) => {
 	let start_date = req.query.start_date;
 	let end_date = req.query.end_date; // default => new Date().format("dd-mm-yyyy")
 	let client_id = req.params.ClientId;
@@ -81,9 +85,49 @@ router.get("/clients/:ClientId(\\d+)", (req, res, next) => {
 			});
 		});
 });
+// get all orders per Driver
+router.get("/drivers/:DriverId(\\d+)", authenticateDriver, (req, res, next) => {
+	let start_date = req.query.start_date;
+	let end_date = req.query.end_date; // default => new Date().format("dd-mm-yyyy")
+	let driver_id = req.params.DriverId;
+
+	let where = {
+		DriverId: driver_id,
+	};
+
+	if ((start_date && end_date) || (start_date && !end_date)) {
+		where[Op.and] = {
+			updatedAt: {
+				[Op.between]: [formatDate(start_date), formatDate(end_date)],
+			},
+		};
+	} else if (!start_date && end_date) {
+		where[Op.and] = {
+			updatedAt: {
+				[Op.lte]: formatDate(end_date),
+			},
+		};
+	}
+
+	Order.findAll({
+		where: {
+			...where,
+			status: "delivered",
+		},
+	})
+		.then((orders) => {
+			res.json(orders);
+		})
+		.catch((error) => {
+			console.error("Error:", error);
+			res.status(500).json({
+				message: "A server error occurred!",
+			});
+		});
+});
 
 // get all orders per driver
-router.get("/drivers/:DriverId(\\d+)", (req, res, next) => {
+router.get("/drivers/:DriverId(\\d+)", authenticateDriver, (req, res, next) => {
 	Order.findAll({ where: { DriverId: req.params.DriverId } })
 		.then((user) => {
 			res.json(user);
@@ -109,7 +153,7 @@ router.get("/placed", authenticateDriver, async (req, res) => {
 		res.status(500).json(error);
 	}
 
-	// check if the driver has uncompleted orders
+	// check if the driver has incomplete orders
 	const drivers_orders = orders.filter((order) => {
 		const deliv_or_placed = ["delivered", "placed"].includes(order.status);
 		const incomplete = order.DriverId === driver.id && !deliv_or_placed;
@@ -120,15 +164,16 @@ router.get("/placed", authenticateDriver, async (req, res) => {
 		return res.status(200).json(drivers_orders); // return the incomplete order(s)
 	}
 
-	// if driver has no incomplete orders
-	return res.status(200).json(orders);
+	// To ensure delivered orders don't show on placed orders
+	const placed_orders = orders.filter((order) => {
+		const placed = ["placed"].includes(order.status);
+		const to_display = order.DriverId === null && placed;
+		return to_display;
+	});
+
+	// if driver has no incomplete orders, return placed orders
+	return res.status(200).json(placed_orders);
 });
-
-// router.post("/trial", (req, res, next) => {
-// 	Order.findAll({
-// 		where: {
-
-// 		)
 
 ////okay
 router.post("/accept/:order_id(\\d+)", authenticateDriver, (req, res) => {
@@ -140,7 +185,6 @@ router.post("/accept/:order_id(\\d+)", authenticateDriver, (req, res) => {
 			res.json({
 				accepted: true,
 			});
-			// also trigger notification since status has changed
 		})
 		.catch((error) => {
 			console.log(error);
@@ -149,8 +193,10 @@ router.post("/accept/:order_id(\\d+)", authenticateDriver, (req, res) => {
 });
 
 router.post("/pick/:order_id(\\d+)", authenticateDriver, (req, res) => {
-	const { order_id } = req.body;
-	Order.update({ status: "picked" }, { where: { order_id: order_id } })
+	Order.update(
+		{ status: "picked" },
+		{ where: { order_id: req.params.order_id } }
+	)
 		.then((order) => {
 			res.json({
 				picked: true,
@@ -164,12 +210,16 @@ router.post("/pick/:order_id(\\d+)", authenticateDriver, (req, res) => {
 });
 
 router.post("/deliver/:order_id(\\d+)", authenticateDriver, (req, res) => {
-	const { order_id } = req.body;
-	Order.update({ status: "delivered" }, { where: { order_id: order_id } })
+	Order.update(
+		{ status: "delivered" },
+		{ where: { order_id: req.params.order_id } }
+	)
 		.then((order) => {
 			res.json({
 				delivered: true,
 			});
+
+			// trigger notification
 		})
 		.catch((error) => {
 			console.log(error);

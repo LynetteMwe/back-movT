@@ -53,20 +53,19 @@ router.all("/login", methodNotAllowed);
 router.post("/register", (req, res) => {
 	const { username, contact, email, password } = req.body;
 	// longer than 8 characters, must have at least one uppercase, one lowercase and one character
-	// const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
 	const pwRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
 	// const pwRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
 	// const usernameRegex = /^[a-zA-Z0-9]{4,}$/;
 
 	let errors = [];
-	if (req.body.password !== "" || password.match(pwRegex))
-		errors.push("Password requirements not met");
 	// console.log(req.body.password !== "" && password.match(pwRegex));
 
-	if (!req.body?.username) errors.push("Field 'username' is required!");
-	if (!req.body?.contact) errors.push("Field 'contact' is required!");
-	if (!req.body?.email) errors.push("Field 'email' is required!");
-	if (!req.body?.password) errors.push("Field 'password' is required!");
+	if (!username) errors.push("Field 'username' is required!");
+	if (!contact) errors.push("Field 'contact' is required!");
+	if (!email) errors.push("Field 'email' is required!");
+	if (!password) errors.push("Field 'password' is required!");
+	if (password !== "" || password.match(pwRegex))
+		errors.push("Password requirements not met");
 	// if (req.body.username !== "" && username.match(usernameRegex))
 	// errors.push("Username requirements not met");
 
@@ -91,31 +90,31 @@ router.post("/register", (req, res) => {
 });
 router.all("/register", methodNotAllowed);
 
-router.put("/changepassword"),
-	(req, res) => {
-		Client.findOne({ where: { email: req.body?.email } }).then(
-			async (user) => {
-				if (!user) {
-					// No such user/email
-					return res.status(400).json({
-						status: res.statusCode, // Bad Request
-						error: "Invalid email!",
-					});
-				} else {
-					req.user
-						.update({ password: req.body?.password })
-						.then(() => {
-							res.status(200).json({
-								status: res.statusCode,
-								message: "Password changed",
-							});
-						})
-						.catch((err) => serverError(err));
-				}
-			}
-		);
-	};
-router.all("/changepassword", methodNotAllowed);
+router.post("/forgot-password", (req, res) => {
+	const { email, password } = req.body;
+	const errors = [];
+	//at least 1 digit, one lower case, one upper case, 8 characters
+	const pwRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
+
+	if (!email) errors.push("Field 'email' is required!");
+	if (!password) errors.push("Field 'password' is required!");
+	if (password !== "" && !password.match(pwRegex))
+		errors.push("Password requirements not met");
+
+	if (errors.length > 0) return res.status(400).json({ errors });
+
+	Client.update({ password }, { where: { email } })
+		.then((client) => {
+			res.json({
+				message: "Password changed successfully",
+			});
+		})
+		.catch((error) => {
+			console.log(error);
+			res.status(500).json(error);
+		});
+});
+router.all("/forgot-password", methodNotAllowed);
 
 // Logout by deleting token
 router.post("/logout", authenticate, async (req, res) => {
