@@ -35,12 +35,18 @@ router.get("/profile", (req, res, next) => {
 });
 
 router.post("/update-profile", (req, res) => {
-	const { username, contact } = req.body;
+	const { username, contact, carType, type, vehicle_plate_no } = req.body;
 
 	Driver.findByPk(req.user.id)
 		.then(async (driver) => {
 			// if driver is found, update the details
-			await driver.update({ username, contact });
+			await driver.update({
+				username,
+				contact,
+				carType,
+				type,
+				vehicle_plate_no,
+			});
 
 			res.status(200).json(driver);
 		})
