@@ -18,6 +18,7 @@ router.post("/login", (req, res) => {
 	let errors = [];
 	if (!req.body?.email) errors.push("Field 'email' is required!");
 	if (!req.body?.password) errors.push("Field 'password' is required!");
+
 	if (errors.length > 0) return res.status(400).json({ errors });
 
 	Driver.findOne({ where: { email: req.body?.email } })
@@ -64,11 +65,17 @@ router.post("/register", (req, res) => {
 		type,
 	} = req.body;
 
+	const pwRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
+
 	let errors = [];
 	if (!req.body?.username) errors.push("Field 'username' is required!");
 	if (!req.body?.contact) errors.push("Field 'contact' is required!");
 	if (!req.body?.email) errors.push("Field 'email' is required!");
 	if (!req.body?.password) errors.push("Field 'password' is required!");
+	if (!pwRegex.test(password))
+		errors.push(
+			"Password must be at least 8 characters, including one digit, one lower case, one upper case character."
+		);
 	if (errors.length > 0) return res.status(400).json({ errors });
 
 	Driver.create({

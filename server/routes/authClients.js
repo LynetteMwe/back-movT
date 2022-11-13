@@ -52,20 +52,18 @@ router.all("/login", methodNotAllowed);
 // Create a new user
 router.post("/register", (req, res) => {
 	const { username, contact, email, password } = req.body;
-	// longer than 8 characters, must have at least one uppercase, one lowercase and one character
-	const pwRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
-	// const pwRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
-	// const usernameRegex = /^[a-zA-Z0-9]{4,}$/;
 
 	let errors = [];
-	// console.log(req.body.password !== "" && password.match(pwRegex));
+	const pwRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
 
 	if (!username) errors.push("Field 'username' is required!");
 	if (!contact) errors.push("Field 'contact' is required!");
 	if (!email) errors.push("Field 'email' is required!");
 	if (!password) errors.push("Field 'password' is required!");
-	if (password !== "" || password.match(pwRegex))
-		errors.push("Password requirements not met");
+	if (!pwRegex.test(password))
+		errors.push(
+			"Password must be at least 8 characters, including one digit, one lower case, one upper case character."
+		);
 	// if (req.body.username !== "" && username.match(usernameRegex))
 	// errors.push("Username requirements not met");
 
@@ -98,8 +96,10 @@ router.post("/forgot-password", (req, res) => {
 
 	if (!email) errors.push("Field 'email' is required!");
 	if (!password) errors.push("Field 'password' is required!");
-	if (password !== "" && !password.match(pwRegex))
-		errors.push("Password requirements not met");
+	if (!pwRegex.test(password))
+		errors.push(
+			"Password must be at least 8 characters, including one digit, one lower case, one upper case character."
+		);
 
 	if (errors.length > 0) return res.status(400).json({ errors });
 
