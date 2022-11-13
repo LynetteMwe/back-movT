@@ -56,11 +56,14 @@ router.get("/:order_id(\\d+)", (req, res, next) => {
 router.get("/clients/:ClientId(\\d+)", authenticateClient, (req, res, next) => {
 	let start_date = req.query.start_date;
 	let end_date = req.query.end_date; // default => new Date().format("dd-mm-yyyy")
+	let status = req.query.status;
 	let client_id = req.params.ClientId;
 
 	let where = {
 		ClientId: client_id,
 	};
+
+	if (status) where.status = status;
 
 	if ((start_date && end_date) || (start_date && !end_date)) {
 		where[Op.and] = {
