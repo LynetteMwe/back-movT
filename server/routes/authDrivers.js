@@ -26,7 +26,7 @@ router.post("/login", (req, res) => {
 				// No such user/email
 				return res.status(400).json({
 					status: res.statusCode, // Bad Request
-					error: "Invalid credentials!", // invalid email
+					error: "Invalid email!", // invalid email
 				});
 			} else {
 				const validPassword = comparePassword(
