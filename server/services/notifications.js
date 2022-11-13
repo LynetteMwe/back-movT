@@ -13,7 +13,7 @@ async function handleSendNotification(messages) {
 	// recommend you batch your notifications to reduce the number of requests
 	// and to compress them (notifications with similar content will get
 	// compressed).
-	if (typeof messages !== "array") return;
+	if (!Array.isArray(messages)) return;
 
 	let chunks = expo.chunkPushNotifications(messages);
 	let tickets = [];

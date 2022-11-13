@@ -217,7 +217,7 @@ router.post("/cancel/:order_id(\\d+)", authenticateDriver, (req, res) => {
 			}
 
 			// if order is found, update the order
-			await order.update({ status: "cancelled", DriverId: null });
+			await order.update({ status: "placed", DriverId: null });
 
 			sendNotificationToClient(order.ClientId, {
 				title: "Order Cancelled",
