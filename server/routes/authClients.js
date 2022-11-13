@@ -55,6 +55,7 @@ router.post("/register", (req, res) => {
 
 	let errors = [];
 	const pwRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
+	const usernameRegex = /^[a-zA-Z0-9]+$/;
 
 	if (!username) errors.push("Field 'username' is required!");
 	if (!contact) errors.push("Field 'contact' is required!");
@@ -64,8 +65,13 @@ router.post("/register", (req, res) => {
 		errors.push(
 			"Password must be at least 8 characters, including one digit, one lower case, one upper case character."
 		);
-	// if (req.body.username !== "" && username.match(usernameRegex))
-	// errors.push("Username requirements not met");
+	if (username.length < 3 || username.length > 15)
+		errors.push(
+			"Username must be at least 3 and at most 15 characters long."
+		);
+
+	if (!usernameRegex.test(username))
+		errors.push("Username can contain letters and numbers only!");
 
 	if (errors.length > 0) return res.status(400).json({ errors });
 
