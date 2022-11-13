@@ -1,5 +1,6 @@
 const express = require("express");
 const { authenticateDriver } = require("../middleware/authenticate");
+const methodNotAllowed = require("../middleware/methodNotAllowed");
 const Driver = require("../models/Driver");
 const { serverError, getUser, generateToken } = require("../utils/utils");
 
@@ -32,6 +33,23 @@ router.get("/profile", (req, res, next) => {
 	};
 	return res.status(200).json(driver);
 });
+
+router.post("/update-profile", (req, res) => {
+	const { username, contact } = req.body;
+
+	Driver.findByPk(req.user.id)
+		.then(async (driver) => {
+			// if driver is found, update the details
+			await driver.update({ username, contact });
+
+			res.status(200).json(driver);
+		})
+		.catch((error) => {
+			console.log(error);
+			res.status(500).json(error);
+		});
+});
+router.all("/update-profile", methodNotAllowed);
 
 // Get all users
 router.get("/", async (req, res) => {
