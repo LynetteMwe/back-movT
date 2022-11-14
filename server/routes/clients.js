@@ -36,7 +36,7 @@ router.post("/update-profile", (req, res) => {
 		})
 		.catch((error) => {
 			console.log(error);
-			res.status(500).json(error);
+			serverError(res, error);
 		});
 });
 router.all("/update-profile", methodNotAllowed);
