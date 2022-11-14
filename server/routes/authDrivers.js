@@ -67,6 +67,7 @@ router.post("/register", (req, res) => {
 
 	const pwRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
 	const usernameRegex = /^[a-zA-Z0-9]+$/;
+	const numberOnly = !isNaN(username);
 
 	let errors = [];
 	if (!req.body?.username) errors.push("Field 'username' is required!");
@@ -83,6 +84,7 @@ router.post("/register", (req, res) => {
 		);
 	if (!usernameRegex.test(username))
 		errors.push("Username can contain letters and numbers only!");
+	if (numberOnly) errors.push("Username cannot be a number only!");
 
 	if (errors.length > 0) return res.status(400).json({ errors });
 
