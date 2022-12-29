@@ -13,6 +13,7 @@ const {
 	truckRoute,
 	userRoute,
 	transactionsRoute,
+	adminsRoute,
 } = require("./routes");
 const Client = require("./models/Client");
 const Driver = require("./models/Driver");
@@ -71,6 +72,8 @@ app.use("/orders", ordersRoute);
 app.use("/payments", transactionsRoute);
 
 app.use("/notifications", notificationsRoute);
+
+app.use("/admin", adminsRoute);
 
 app.post("/expo-push-token", authenticate, async (req, res) => {
 	const pushToken = req.body.expoPushToken;

@@ -74,6 +74,20 @@ function getUser(user, showToken = false) {
 	return obj;
 }
 
+function getOrder(order) {
+	const obj = {
+		id: order?.order_id,
+		clientId: order?.ClientId,
+		driverId: order?.DriverId,
+		origin: order?.origin,
+		destination: order?.destination,
+		amount: order?.amount,
+		status: order?.status,
+		createdAt: order?.createdAt,
+	};
+	return obj;
+}
+
 function generateToken(email) {
 	const str = email + new Date().toUTCString();
 	return bcrypt.hashSync(str, 10);
@@ -86,5 +100,6 @@ module.exports = {
 	encryptPassword,
 	comparePassword,
 	getUser,
+	getOrder,
 	generateToken,
 };
