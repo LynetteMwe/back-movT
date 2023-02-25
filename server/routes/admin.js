@@ -1,4 +1,7 @@
 const express = require("express");
+const { getClients } = require("../controllers/ClientsController");
+const { getDrivers } = require("../controllers/DriversController");
+const { getOrders } = require("../controllers/OrdersController");
 const Client = require("../models/Client");
 const Driver = require("../models/Driver");
 const Order = require("../models/Order");
@@ -11,29 +14,13 @@ const router = express.Router();
 // 2. To add date filter to orders
 
 //get all clients
-router.get("/clients", async (req, res) => {
-	const _ = await Client.findAll();
-	users = _.map((user) => getUser(user));
-	res.status(200).json(users);
-
-	// Client.findAll().then((clients) => {
-	// 	res.status(200).json(clients);
-	// });
-});
+router.get("/clients", getClients);
 
 // Get all drivers
-router.get("/drivers", async (req, res) => {
-	const _ = await Driver.findAll();
-	users = _.map((user) => getUser(user));
-	res.status(200).json(users);
-});
+router.get("/drivers", getDrivers);
 
 // Get all orders
-router.get("/orders", async (req, res) => {
-	const _ = await Order.findAll();
-	orders = _.map((order) => getOrder(order));
-	res.status(200).json(orders);
-});
+router.get("/orders", getOrders);
 
 // Placed orders
 router.get("/orders/placed", (req, res) => {

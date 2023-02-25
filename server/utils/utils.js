@@ -74,11 +74,28 @@ function getUser(user, showToken = false) {
 	return obj;
 }
 
+function getDriver(user, showToken = false) {
+	const obj = {
+		id: user?.id,
+		username: user?.username,
+		contact: user?.contact,
+		email: user?.email,
+		type: user?.type,
+		carType: user?.carType,
+		vehicle_plate_no: user?.vehicle_plate_no,
+	};
+	if (showToken) obj.token = user?.token;
+	return obj;
+}
+
 function getOrder(order) {
 	const obj = {
 		id: order?.order_id,
 		clientId: order?.ClientId,
 		driverId: order?.DriverId,
+		type: order?.type,
+		itemType: order?.itemType,
+		carType: order?.carType,
 		origin: order?.origin,
 		destination: order?.destination,
 		amount: order?.amount,
@@ -100,6 +117,7 @@ module.exports = {
 	encryptPassword,
 	comparePassword,
 	getUser,
+	getDriver,
 	getOrder,
 	generateToken,
 };

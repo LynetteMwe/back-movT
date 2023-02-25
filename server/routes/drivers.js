@@ -1,94 +1,31 @@
 const express = require("express");
-const { authenticateDriver } = require("../middleware/authenticate");
 const methodNotAllowed = require("../middleware/methodNotAllowed");
-const Driver = require("../models/Driver");
-const { serverError, getUser, generateToken } = require("../utils/utils");
+const {
+	getDriverByID,
+	getDriverProfile,
+	updateDriverProfile,
+	getDrivers,
+	createDriver,
+} = require("../controllers/DriversController");
 
 const router = express.Router();
 
-// Get single user by id
-router.get("/:id(\\d+)", (req, res, next) => {
-	Driver.findByPk(req.params.id)
-		.then((user) => {
-			if (!user)
-				return res.status(404).json({
-					status: res.statusCode, // Not Found
-					error: "User not found!",
-				});
-			res.json(getUser(user));
-		})
-		.catch((error) => serverError(res, error));
-});
+// Get all drivers
+router.get("/", getDrivers);
 
 // Get single user by id
-router.get("/profile", (req, res, next) => {
-	const driver = {
-		id: req.user.id,
-		username: req.user.username,
-		email: req.user.email,
-		contact: req.user.contact,
-		carType: req.user.carType,
-		vehicle_plate_no: req.user.vehicle_plate_no,
-		type: req.user.type,
-	};
-	return res.status(200).json(driver);
-});
+router.get("/:id(\\d+)", getDriverByID);
 
-router.post("/update-profile", (req, res) => {
-	const { username, contact, carType, type, vehicle_plate_no } = req.body;
+// Get single user by id
+router.get("/profile", getDriverProfile);
 
-	Driver.findByPk(req.user.id)
-		.then(async (driver) => {
-			// if driver is found, update the details
-			await driver.update({
-				username,
-				contact,
-				carType,
-				type,
-				vehicle_plate_no,
-			});
+// Create a new driver
+router.post("/", createDriver);
 
-			res.status(200).json(driver);
-		})
-		.catch((error) => {
-			console.log(error);
-			serverError(res, error);
-		});
-});
+// Update driver's profile
+router.post("/update-profile", updateDriverProfile);
 router.all("/update-profile", methodNotAllowed);
 
-// Get all users
-router.get("/", async (req, res) => {
-	const _ = await Driver.findAll();
-	users = _.map((user) => getUser(user));
-	res.status(200).json(users);
-});
-
-// Create a new user
-router.post("/", (req, res, next) => {
-	const { username, contact, email, password } = req.body;
-	Driver.create({
-		username,
-		contact,
-		email,
-		password,
-		token: generateToken(email),
-	})
-		.then((user) => {
-			if (!user)
-				return res.status(400).json({
-					status: res.statusCode, // Bad Request
-					error: "Provide username, contact, email, password",
-				});
-			res.json(getUser(user, true));
-		})
-		.catch((error) => serverError(res, error));
-});
-
-// Update a user
-// ...
-
-// Delete a user
-// ...
+// Delete a driver
 
 module.exports = router;

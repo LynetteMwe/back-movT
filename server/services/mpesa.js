@@ -61,7 +61,7 @@ async function send_stk_push(phone, amount) {
 	let bs_short_code = process.env.lipa_na_mpesa_shortcode;
 	let passkey = process.env.lipa_na_mpesa_passkey;
 	let callBackUrl = process.env.callback_url;
-	let officialPhoneNo = parse_mpesa_phone_number(phone); //should follow the format:2547xxxxxxxx
+	let officialPhoneNo = parse_mpesa_phone_number(phone);
 
 	let password = new Buffer.from(
 		`${bs_short_code}${passkey}${timestamp}`

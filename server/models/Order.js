@@ -30,7 +30,7 @@ const Order = sequelize.define("Order", {
 	},
 	itemType: {
 		type: DataTypes.STRING,
-		// allowNull: false,
+		allowNull: false,
 	},
 	origin: {
 		type: DataTypes.STRING,
@@ -53,9 +53,11 @@ const Order = sequelize.define("Order", {
 	},
 	carType: {
 		type: DataTypes.STRING,
+		allowNull: false,
 	},
 	type: {
 		type: DataTypes.STRING,
+		allowNull: false,
 	},
 	amount: {
 		type: DataTypes.DOUBLE,

@@ -10,8 +10,6 @@ const {
 	driverRoute,
 	ordersRoute,
 	notificationsRoute,
-	truckRoute,
-	userRoute,
 	transactionsRoute,
 	adminsRoute,
 } = require("./routes");
