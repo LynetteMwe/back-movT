@@ -28,6 +28,10 @@ const Order = sequelize.define("Order", {
 			key: "id",
 		},
 	},
+	type: {
+		type: DataTypes.STRING,
+		allowNull: false,
+	},
 	itemType: {
 		type: DataTypes.STRING,
 		allowNull: false,
@@ -55,10 +59,7 @@ const Order = sequelize.define("Order", {
 		type: DataTypes.STRING,
 		allowNull: false,
 	},
-	type: {
-		type: DataTypes.STRING,
-		allowNull: false,
-	},
+
 	amount: {
 		type: DataTypes.DOUBLE,
 		allowNull: false,

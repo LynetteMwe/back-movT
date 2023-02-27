@@ -1,8 +1,5 @@
 const express = require("express");
-const {
-	authenticate,
-	authenticateDriver,
-} = require("../middleware/authenticate");
+const { authenticateDriver } = require("../middleware/authenticate");
 const Driver = require("../models/Driver");
 const {
 	generateToken,
@@ -138,7 +135,7 @@ router.post("/setup-vehicle-info", authenticateDriver, (req, res) => {
 router.all("/register", methodNotAllowed);
 
 // Logout by deleting token
-router.post("/logout", authenticate, async (req, res) => {
+router.post("/logout", async (req, res) => {
 	user = await Driver.findByPk(req.user.id);
 
 	user.update({ token: null })

@@ -224,6 +224,16 @@ const acceptOrder = (req, res) => {
 				return;
 			}
 
+			if (
+				order.type !== req.user.type &&
+				order.carType !== req.user.carType
+			) {
+				res.status(400).json(
+					"Sorry, you can not accept that placed order type. "
+				);
+				return;
+			}
+
 			// if order is found, update the order
 			await order.update({ status: "accepted", DriverId: req.user.id });
 
@@ -254,7 +264,7 @@ const cancelOrder = (req, res) => {
 
 			if (order.status !== "accepted") {
 				res.status(400).json(
-					"Sorry, you cannot cancel an accepted order."
+					"Sorry, you can only cancel an accepted order."
 				);
 				return;
 			}
@@ -346,6 +356,17 @@ const deliverOrder = (req, res) => {
 		});
 };
 
+const allPlacedorders = (req, res) => {
+	Order.findAll({
+		where: {
+			status: "placed",
+		},
+	}).then((orders) => {
+		orders = orders.map((order) => getOrder(order));
+		res.status(200).json(orders);
+	});
+};
+
 module.exports = {
 	getOrders,
 	getOrderById,
@@ -358,4 +379,5 @@ module.exports = {
 	cancelOrder,
 	pickOrder,
 	deliverOrder,
+	allPlacedorders,
 };

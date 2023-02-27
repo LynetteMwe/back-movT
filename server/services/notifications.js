@@ -8,28 +8,19 @@ let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
 
 // let pushToken = "ExponentPushToken[SUF3_mK6IZG7ywhiOKLFvS]";
 async function handleSendNotification(messages) {
-	// The Expo push notification service accepts batches of notifications so
-	// that you don't need to send 1000 requests to send 1000 notifications. We
-	// recommend you batch your notifications to reduce the number of requests
-	// and to compress them (notifications with similar content will get
-	// compressed).
+	// batch your notifications to reduce the number of requests
 	if (!Array.isArray(messages)) return;
 
 	let chunks = expo.chunkPushNotifications(messages);
 	let tickets = [];
 	(async () => {
-		// Send the chunks to the Expo push notification service. There are
-		// different strategies you could use. A simple one is to send one chunk at a
-		// time, which nicely spreads the load out over time:
+		// Send the chunks to the Expo push notification service.
 		for (let chunk of chunks) {
 			try {
 				let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
 				// console.log(ticketChunk);
 				tickets.push(...ticketChunk);
-				// NOTE: If a ticket contains an error code in ticket.details.error, you
-				// must handle it appropriately. The error codes are listed in the Expo
-				// documentation:
-				// https://docs.expo.io/push-notifications/sending-notifications/#individual-errors
+				// If a ticket contains an error code in ticket.details.error
 			} catch (error) {
 				console.error(error);
 			}
@@ -38,8 +29,6 @@ async function handleSendNotification(messages) {
 
 	let receiptIds = [];
 	for (let ticket of tickets) {
-		// NOTE: Not all tickets have IDs; for example, tickets for notifications
-		// that could not be enqueued will have error information and no receipt ID.
 		if (ticket.id) {
 			receiptIds.push(ticket.id);
 		}
@@ -47,7 +36,6 @@ async function handleSendNotification(messages) {
 
 	let receiptIdChunks = expo.chunkPushNotificationReceiptIds(receiptIds);
 	(async () => {
-		// Like sending notifications, there are different strategies you could use
 		// to retrieve batches of receipts from the Expo service.
 		for (let chunk of receiptIdChunks) {
 			try {
@@ -67,9 +55,6 @@ async function handleSendNotification(messages) {
 							`There was an error sending a notification: ${message}`
 						);
 						if (details && details.error) {
-							// The error codes are listed in the Expo documentation:
-							// https://docs.expo.io/push-notifications/sending-notifications/#individual-errors
-							// You must handle the errors appropriately.
 							console.error(`The error code is ${details.error}`);
 						}
 					}
@@ -102,7 +87,6 @@ async function sendNotificationToDriver(driver_id, { title, body, data }) {
 		return false;
 	}
 
-	// Construct a message (see https://docs.expo.io/push-notifications/sending-notifications/)
 	const message = {
 		to: pushToken,
 		sound: "default",
@@ -122,7 +106,7 @@ async function sendNotificationToClient(client_id, { title, body, data }) {
 	let pushToken;
 
 	try {
-		// fetch the push token of the driver
+		// fetch the push token of the client
 		const client = await Client.findByPk(client_id);
 		pushToken = client.resetToken;
 	} catch (error) {

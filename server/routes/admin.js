@@ -1,7 +1,10 @@
 const express = require("express");
 const { getClients } = require("../controllers/ClientsController");
 const { getDrivers } = require("../controllers/DriversController");
-const { getOrders } = require("../controllers/OrdersController");
+const {
+	getOrders,
+	allPlacedorders,
+} = require("../controllers/OrdersController");
 const Client = require("../models/Client");
 const Driver = require("../models/Driver");
 const Order = require("../models/Order");
@@ -23,16 +26,7 @@ router.get("/drivers", getDrivers);
 router.get("/orders", getOrders);
 
 // Placed orders
-router.get("/orders/placed", (req, res) => {
-	Order.findAll({
-		where: {
-			status: "placed",
-		},
-	}).then((orders) => {
-		orders = orders.map((order) => getOrder(order));
-		res.status(200).json(orders);
-	});
-});
+router.get("/orders/placed", allPlacedorders);
 
 // Accepted orders
 router.get("/orders/accepted", (req, res) => {
