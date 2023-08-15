@@ -8,19 +8,19 @@ const DB_PASSWORD = process.env.DB_PASSWORD;
 const production = process.env.NODE_ENV === "production";
 
 const sequelize = new Sequelize(DB_NAME, DB_USERNAME, DB_PASSWORD, {
-    dialect: "mysql",
-    host: DB_HOST,
-    port: DB_PORT,
-    logging: production ? console.log: false, // console.log | false
+	dialect: "mysql",
+	host: DB_HOST,
+	port: DB_PORT,
+	logging: production ? console.log : false, // console.log | false
 });
 
 sequelize
-    .authenticate()
-    .then(() => {
-        console.log("Database connection has been established successfully.");
-    })
-    .catch(error => {
-        console.error("Unable to connect to the database:", error);
-    });
+	.authenticate()
+	.then(() => {
+		console.log("Database connection has been established successfully.");
+	})
+	.catch((error) => {
+		console.error("Unable to connect to the database:", error);
+	});
 
 module.exports = sequelize;
